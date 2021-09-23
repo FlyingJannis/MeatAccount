@@ -1,0 +1,71 @@
+<resources>
+    <string name="statistics">Statistics</string>
+    <string name="app_name">MeatAccount</string>
+    <string name="app_name_pro">MeatAccount PRO</string>
+    <string name="choose_meat">Please choose your weekly amount of meat:</string>
+    <string name="accept">accept</string>
+    <string name="undo">undo</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="payday">Payday:</string>
+    <string name="eaten_month">Weekly consumption in the last 28 days (Ø):</string>
+    <string name="average_day">Average meat\nconsumption per day:</string>
+    <string name="weekly_amount">Your weekly amount of meat:</string>
+    <string name="calm_down">Okay, stay calm! You are misusing MeatAccount…</string>
+    <string name="vegetarian">If you want to be a vegetarian, you do not need MeatAccount anymore.</string>
+    <string name="no_stats">Statistics are available\nafter your first week.</string>
+    <string name="graph_title">Weekly meat consumption (in grams):</string>
+    <string name="button_explanation">Enter your current meat consumption in grams:</string>
+    <string name="weeks">weeks</string>
+    <string name="create_account">Create a new account</string>
+    <string name="balance">Bank Balance:</string>
+    <string name="three_months">3 months</string>
+    <string name="total">total</string>
+    <string name="last_year">1 year</string>
+    <string name="since_first_week">Since your first week you have eaten\n</string>
+    <string name="kilos">kilos</string>
+    <string name="kilos_less">\nless meat than the average European!</string>
+    <string name="thats">This corresponds to\n</string>
+    <string name="percent_average">%\nof the average European\'s meat consumption.</string>
+    <string name="means_for_emissions">The CO2 emissions you have saved are equivalent to driving\n</string>
+    <string name="kilometres">km</string>
+    <string name="less_cardriving">\nby car.</string>
+    <string name="point">,</string>
+    <string name="delete_account">delete account</string>
+    <string name="delete_message">Are you sure you want to reset your meat account completely?
+    You will no longer be able to access your old data!</string>
+    <string name="cancel">Cancel</string>
+    <string name="sure">Are you sure?</string>
+    <string name="really_sure">Are you really sure?!</string>
+    <string name="give_up_meat">Give up 100g of meat:</string>
+    <string name="actual_weekly_meet">Average weekly consumption (Ø):</string>
+    <string name="cant_giveup">You can\'t give up 100g of meat, otherwise you\'ll overdraw your account…</string>
+    <string name="days_since">Days since your last meat consumption:</string>
+    <string name="water_saved">With the water you have saved, you could fill\n</string>
+    <string name="tanker_trucks">\nlarge tanker trucks!</string>
+    <string name="amount_recieved">You got</string>
+    <string name="amount_recieved_end">of new meat transferred to your meat account!</string>
+    <string name="new_meat">New Meat!</string>
+    <string name="new_meat_text">You have been added new meat to your meat account. Come and have a look!</string>
+    <string name="new_meat_channel_describtion">Channel to be reminded of new meat</string>
+    <string name="welcome1">Welcome to MeatAccount!\n\nMeatAccount helps you track and systematically reduce your
+        meat consumption.\n\nThe planet will thank you for it!</string>
+    <string name="welcome2">You will open your first meat account right away!\n\nYour set weekly amount
+        of meat will then be transferred to you at the same time every week!</string>
+    <string name="welcome3">Whenever you eat meat from now on, you deduct the corresponding amount of meat from your meat account.
+        from your meat account.\n\nIt\'s easy!</string>
+    <string name="welcome4">In your statistics you can see live what impact your renunciation has on the environment!</string>
+    <string name="welcome5">Alright?\nThen let\'s go!</string>
+
+
+    <string name="app_id">ca-app-pub-8498756977378374~3852068180</string>
+
+
+
+
+</resources>

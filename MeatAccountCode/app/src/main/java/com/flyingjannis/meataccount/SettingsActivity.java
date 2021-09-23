@@ -1,0 +1,696 @@
+package com.flyingjannis.meataccount;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+
+public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
+    public final static boolean PRO_VERSION = false;
+
+    public final static int MEAT_WEEK_EU = 1245;
+    public final static double CO2_PER_KILO = 5.49;
+    public final static double CO2_PER_KM = 0.15;
+    public final static double LITER_PER_KILO = 7633; //Ausgerechnet mit jeweiligen Anteilen und Wasserverbrauch der Tierarten
+    public final static double LITER_PER_TRUCK = 30000; //DUMMY!!!
+
+    private Account myAccount;
+
+    private AdView mAdView;
+
+    private ConstraintLayout clFunFact;
+    private LinearLayout llMakeSureButtons;
+    private GraphView graphView;
+    private TextView tvLastMonthNumber;
+    private TextView tvAverageDayNumber;
+    private Button buttonAmountUp;
+    private Button buttonAmountDown;
+    private Button button3Month;
+    private Button buttonYear;
+    private Button buttonTotal;
+    private Button button100Less;
+    private Button buttonAcceptGiveUp;
+    private Button buttonCancelGiveUp;
+    private TextView tvWeeklyAmount;
+    private TextView tvNoStats;
+    private TextView tvFact;
+    private TextView tvBalanceSettings;
+    private TextView tvActualMeetWeek;
+    private TextView tvLastMeat;
+    private ImageView ivFingerTap;
+
+    private boolean statsAvailable = false;
+    private int graphState = 2; //0 = 3 Monate, 1 = Jahr, 2 = Total
+    private int factSwitch = 0;
+    private boolean acceptMode = false;
+    private Toast actualToast;
+
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        mAdView = findViewById(R.id.adView);
+        if(PRO_VERSION) {
+            mAdView.setVisibility(View.GONE);
+        } else {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            mAdView.loadAd(adRequest);
+        }
+
+        loadData();
+        setTitle(getResources().getString(R.string.statistics));
+        
+        myAccount.addMeatDay(0);            //Statistik wird geupdated! (0 wird hinzugefügt)
+
+        clFunFact = findViewById(R.id.clFunFact);
+        llMakeSureButtons = findViewById(R.id.llMakeSureButtons);
+        graphView = findViewById(R.id.graphView);
+        tvLastMonthNumber = findViewById(R.id.tvLastMonthNumber);
+        tvAverageDayNumber = findViewById(R.id.tvAverageDayNumber);
+        buttonAmountDown = findViewById(R.id.buttonAmountDown);
+        buttonAmountUp = findViewById(R.id.buttonAmountUp);
+        button3Month = findViewById(R.id.button3Month);
+        buttonYear = findViewById(R.id.buttonYear);
+        buttonTotal = findViewById(R.id.buttonTotal);
+        buttonAcceptGiveUp = findViewById(R.id.buttonAcceptGiveUp);
+        buttonCancelGiveUp = findViewById(R.id.buttonCancelGiveUp);
+        tvWeeklyAmount = findViewById(R.id.tvWeeklyAmount);
+        tvNoStats = findViewById(R.id.tvNoStats);
+        tvFact = findViewById(R.id.tvFact);
+        tvBalanceSettings = findViewById(R.id.tvBalanceSettings);
+        tvActualMeetWeek = findViewById(R.id.tvActualMeetWeek);
+        button100Less = findViewById(R.id.button100Less);
+        tvLastMeat = findViewById(R.id.tvLastMeat);
+        ivFingerTap = findViewById(R.id.ivFingerTap);
+
+        buttonAmountDown.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(myAccount.weeklyAmount >= 20) {
+                    myAccount.weeklyAmount = myAccount.weeklyAmount - 10;
+                    tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.weeklyAmount));
+                    saveData();
+                } else {
+                    makeToast(getResources().getString(R.string.vegetarian), Toast.LENGTH_SHORT);
+                }
+                if(statsAvailable) {
+                    updateGraph();
+                }
+            }
+        }));
+        buttonAmountUp.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(myAccount.weeklyAmount <= 990) {
+                    myAccount.weeklyAmount = myAccount.weeklyAmount + 10;
+                    tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.weeklyAmount));
+                    saveData();
+                } else {
+                    makeToast(getResources().getString(R.string.calm_down), Toast.LENGTH_SHORT);
+                }
+                if(statsAvailable) {
+                    updateGraph();
+                }
+            }
+        }));
+        clFunFact.setOnClickListener(this);
+        button3Month.setOnClickListener(this);
+        buttonYear.setOnClickListener(this);
+        buttonTotal.setOnClickListener(this);
+        button100Less.setOnClickListener(this);
+        buttonAcceptGiveUp.setOnClickListener(this);
+        buttonCancelGiveUp.setOnClickListener(this);
+
+        updateBalance();                                    //Setzt den aktuellen Kontostand
+        tvActualMeetWeek.setText(MainActivity.beautifulWeight(averagePerDay() * 7));
+
+        button3Month.setVisibility(View.GONE);
+        buttonYear.setVisibility(View.GONE);
+        buttonTotal.setVisibility(View.GONE);
+        llMakeSureButtons.setVisibility(View.GONE);
+        unselectAll();
+
+
+        if(myAccount.payments > 52) {                   //über ein Jahr sind vergangen
+            button3Month.setVisibility(View.VISIBLE);
+            buttonYear.setVisibility(View.VISIBLE);
+            buttonTotal.setVisibility(View.VISIBLE);
+
+            graphState = 0;
+            button3Month.setSelected(true);
+        } else if(myAccount.payments > 12) {            //über 3 Monate sind vergangen
+            button3Month.setVisibility(View.VISIBLE);
+            buttonTotal.setVisibility(View.VISIBLE);
+
+            graphState = 0;
+            button3Month.setSelected(true);
+        }                                         //unter 3 Monaten sind vergangen
+
+
+        totalDataAsGraph();                         //Graphview wird initialisiert und zeigt Daten der Wochen an.
+
+        tvAverageDayNumber.setText(MainActivity.beautifulWeight(averagePerDay()));
+        tvLastMonthNumber.setText(MainActivity.beautifulWeight(averageWeekLast28Days()));
+
+        if(daysSinceLastMeat() >= 0) {                  //Fehlercode ist -1
+            tvLastMeat.setText("" + MainActivity.beautifulNumber(daysSinceLastMeat()));
+        } else {
+            tvLastMeat.setText("?");
+        }
+        tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.weeklyAmount));
+
+        loadFact();                                 //hier wurde entfernt, dass Facts erst nach einer Woche geladen werden.
+
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.button3Month:
+                if(graphState != 0) {
+                    unselectAll();
+                    graphState = 0;
+                    button3Month.setSelected(true);
+                    updateGraph();
+                }
+                break;
+            case R.id.buttonYear:
+                if(graphState != 1) {
+                    unselectAll();
+                    graphState = 1;
+                    buttonYear.setSelected(true);
+                    updateGraph();
+                }
+                break;
+            case R.id.buttonTotal:
+                if(graphState != 2) {
+                    unselectAll();
+                    graphState = 2;
+                    buttonTotal.setSelected(true);
+                    updateGraph();
+                }
+                break;
+            case R.id.button100Less:
+                if(myAccount.balance >= 100) {                  //Man soll durch das Verzichten nicht ins Minus geraten können!
+                    acceptMode = true;
+                    changeButtons();
+                    tvBalanceSettings.setText(MainActivity.beautifulWeight(myAccount.balance - 100));
+                } else {
+                    makeToast(getResources().getString(R.string.cant_giveup), Toast.LENGTH_SHORT);
+                }
+                break;
+            case R.id.buttonAcceptGiveUp:
+                acceptMode = false;
+                changeButtons();
+                myAccount.balance = myAccount.balance - 100;
+                updateBalance();
+                saveData();
+                break;
+            case R.id.buttonCancelGiveUp:
+                acceptMode = false;
+                changeButtons();
+                updateBalance();
+                break;
+            case R.id.clFunFact:
+                loadFact();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + view.getId());
+        }
+    }
+
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent keyEvent) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            if(acceptMode) {
+                acceptMode = false;
+                changeButtons();
+                updateBalance();
+                return true;
+            }
+            saveData();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+        return super.onKeyDown(keyCode, keyEvent);
+    }
+
+    private void makeToast(String text, int length) {
+        if(actualToast != null) {
+            actualToast.cancel();
+        }
+        actualToast = Toast.makeText(SettingsActivity.this, text,
+                length);
+        actualToast.show();
+    }
+
+
+    private void changeButtons() {
+        if(button100Less.getVisibility() == View.VISIBLE) {
+            button100Less.setVisibility(View.GONE);
+            llMakeSureButtons.setVisibility(View.VISIBLE);
+
+            tvBalanceSettings.setTextColor(getResources().getColor(R.color.green));
+        } else {
+            button100Less.setVisibility(View.VISIBLE);
+            llMakeSureButtons.setVisibility(View.GONE);
+
+            tvBalanceSettings.setTextColor(getResources().getColor(R.color.numbers_in_boxes));
+        }
+    }
+
+    private void updateBalance() {
+        tvBalanceSettings.setText(MainActivity.beautifulWeight(myAccount.balance));
+    }
+
+
+    private void unselectAll() {
+        button3Month.setSelected(false);
+        buttonYear.setSelected(false);
+        buttonTotal.setSelected(false);
+    }
+
+    private void updateGraph() {        //Neu: Alle Graphen werden gelöscht und neu gezeichnet!
+        /**
+         *         DataPoint[] average = new DataPoint[myAccount.payments + 1];
+         *         for(int i = 0; i < myAccount.payments + 1; i++) {
+         *             average[i] = new DataPoint(i, myAccount.weeklyAmount);
+         *         }
+         */
+        graphView.removeAllSeries();
+        totalDataAsGraph();
+    }
+
+    public void totalDataAsGraph() {
+        graphView.setTitle(getResources().getString(R.string.graph_title));
+        if(myAccount.payments > 0) {
+            statsAvailable = true;
+
+            DataPoint[] average;
+
+            DataPoint[] totalData;
+            if(graphState == 0) {                       //letzten 3 Monate
+                graphView.getViewport().setMinX(myAccount.payments - 12);
+
+                DataPoint[] tmp = new DataPoint[13];
+                DataPoint[] data = getTotalData();
+                for(int i = 0; i < 13; i++) {
+                    tmp[i] = data[data.length - 13 + i];    //letzten 13 Werte (3 Monate)
+                }
+                totalData = reduceData(tmp);
+
+                //Jetzt noch Average anpassen!
+                average = new DataPoint[13];
+                for(int i = 0; i < 13; i++) {
+                    average[i] = new DataPoint(myAccount.payments - 12 + i, myAccount.weeklyAmount);
+                }
+            } else if(graphState == 1) {                //Letztes Jahr
+                graphView.getViewport().setMinX(myAccount.payments - 52);
+
+                DataPoint[] tmp = new DataPoint[53];
+                DataPoint[] data = getTotalData();
+                for(int i = 0; i < 53; i++) {
+                    tmp[i] = data[data.length - 53 + i];    //letzten 53 Werte (1 Jahr)
+                }
+                totalData = reduceData(tmp);
+
+                average = new DataPoint[53];
+                for(int i = 0; i < 53; i++) {
+                    average[i] = new DataPoint(myAccount.payments - 52 + i, myAccount.weeklyAmount);
+                }
+            } else if(graphState == 2) {                //Total
+                graphView.getViewport().setMinX(0);
+
+                totalData = reduceData(getTotalData());
+                average = new DataPoint[myAccount.payments + 1];
+                for(int i = 0; i < myAccount.payments + 1; i++) {
+                    average[i] = new DataPoint(i, myAccount.weeklyAmount);
+                }
+            } else {
+                throw new RuntimeException("graphState has to be one of 0, 1 or 2!");
+            }
+
+            LineGraphSeries<DataPoint> averageLine = new LineGraphSeries<>(average);
+            averageLine.setColor(getResources().getColor(R.color.green));
+            averageLine.setThickness(10);
+
+
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<>(totalData);
+            series.setColor(getResources().getColor(R.color.secondary_color));
+            series.setDrawDataPoints(true);
+            series.setDataPointsRadius(1);
+
+            DataPoint[] tmp = {new DataPoint(myAccount.payments, 0)};   //Setzt ans Ende des Graphen einen Punkt, damit bis 0 skaliert wird auf der y-Achse
+            graphView.addSeries(new LineGraphSeries<DataPoint>(tmp));
+            graphView.addSeries(averageLine);
+            graphView.addSeries(series);
+
+            graphView.getGridLabelRenderer().setGridColor(getResources().getColor(R.color.decent_white));
+            graphView.setTitleColor(getResources().getColor(R.color.white));
+            graphView.getGridLabelRenderer().setHorizontalLabelsColor(getResources().getColor(R.color.white));
+            graphView.getGridLabelRenderer().setVerticalLabelsColor(getResources().getColor(R.color.white));
+
+            if(myAccount.payments < 4) {
+                graphView.getGridLabelRenderer().setNumHorizontalLabels(myAccount.payments + 1);
+            } else {
+                //graphView.getGridLabelRenderer().setNumHorizontalLabels(3);
+            }
+
+            graphView.getViewport().setXAxisBoundsManual(true);
+            graphView.getViewport().setMaxX(myAccount.payments);
+
+            graphView.getViewport().setYAxisBoundsManual(true);         //Passt Y-Achse an
+            graphView.getViewport().setMaxY(getBorder(totalData));
+            //if((getBorder(totalData) / myAccount.weeklyAmount) <= 6) {
+            //    graphView.getGridLabelRenderer().setNumVerticalLabels(getBorder(totalData) / myAccount.weeklyAmount);
+            //}
+
+            graphView.getGridLabelRenderer().setHorizontalAxisTitle(getResources().getString(R.string.weeks));
+            graphView.getGridLabelRenderer().setHorizontalAxisTitleColor(getResources().getColor(R.color.white));
+
+            tvNoStats.setVisibility(View.GONE);
+        } else {
+            graphView.getGridLabelRenderer().setNumHorizontalLabels(2);
+            graphView.getViewport().setYAxisBoundsManual(true);
+            graphView.getViewport().setMaxY(myAccount.weeklyAmount);
+            graphView.getGridLabelRenderer().setHorizontalAxisTitle(getResources().getString(R.string.weeks));
+            graphView.getGridLabelRenderer().setNumVerticalLabels(6);
+        }
+    }
+
+    private int getBorder(DataPoint[] data) {
+        int max = 0;            //Maximaler Wochenkonsum
+        for(int i = 0; i < data.length; i++) {
+            if(data[i].getY() > max) {
+                max = (int) data[i].getY();
+            }
+        }
+        int tmp = max / myAccount.weeklyAmount;
+        return tmp * myAccount.weeklyAmount + myAccount.weeklyAmount;
+    }
+
+    public DataPoint[] getTotalData() {
+        DataPoint[] result = new DataPoint[myAccount.payments + 1];     //Aktuelle Woche wird nicht miteinbezogen!
+        result[0] = new DataPoint(0, myAccount.weeklyAmount);           //Graph startet beim festgelegtem Durchschnitt
+        for(int i = 1; i < result.length; i++) {
+            result[i] = new DataPoint(i, myAccount.weeks[i - 1].getMeatAmount());
+        }
+        saveData();
+        return result;
+    }
+
+    public DataPoint[] reduceData(DataPoint[] data) {
+        if(data.length > 53) {
+            DataPoint[] reduced;
+            if((data.length - 1) % 2 == 0) {          //gerade Länge! WENN MAN DAS ERSTE ARRAY FELD IGNORIERT!
+                reduced = new DataPoint[((data.length - 1) / 2) + 1];
+                reduced[0] = data[0];
+                for(int i = 1; i < reduced.length; i++) {
+                    int average = (int) (( data[2 * i - 1].getY() + data[2 * i].getY() ) / 2);
+                    reduced[i] = new DataPoint(data[2 * i].getX(), average);
+                }
+            } else {                            //ungerade Länge!
+                reduced = new DataPoint[((data.length - 1) / 2) + 1 + 1];
+                reduced[0] = data[0];
+                for(int i = 1; i < (reduced.length - 1); i++) {
+                    int average = (int) (( data[2 * i - 1].getY() + data[2 * i].getY() ) / 2);
+                    reduced[i] = new DataPoint(data[2 * i].getX(), average);
+                }
+                reduced[reduced.length - 1] = data[data.length - 1];
+            }
+            return reduceData(reduced);
+        } else {
+            return data;
+        }
+    }
+
+    public int daysSinceLastMeat() {
+        int counter = 0;
+        boolean foundMeat = false;
+        int i = myAccount.payments;
+        while(i >= 0 && !foundMeat) {
+            int j = 6;
+            while(j >= 0 && !foundMeat) {
+                if(myAccount.weeks[i].getDays()[j] > 0) {
+                    foundMeat = true;
+                } else {
+                    counter++;
+                }
+                j--;
+            }
+            i--;
+        }
+        if(!foundMeat) {            //Falls noch gar kein Fleisch konsumiert wurde!
+            return -1;
+        }
+        Calendar calendar = Calendar.getInstance();
+        int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.creationDate.dayOfWeek) % 7) + 7) % 7);
+        boolean afterPayHour = calendar.get(Calendar.HOUR_OF_DAY) >= myAccount.creationDate.hour;
+        if(dayMeatWeek == 0 && !afterPayHour) {
+            counter = counter + 1;
+        } else {
+            counter = counter - (6 - dayMeatWeek);
+        }
+        return counter;
+    }
+
+    public int averageWeekLast28Days() {
+        if(myAccount.payments >= 4) {
+            Calendar calendar = Calendar.getInstance();
+            int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.creationDate.dayOfWeek) % 7) + 7) % 7);
+            int totalMeat28 = myAccount.weeks[myAccount.payments - 1].getMeatAmount() +             //Die drei letzten abgeschlossenen Wochen.
+                    myAccount.weeks[myAccount.payments - 2].getMeatAmount() +
+                    myAccount.weeks[myAccount.payments - 3].getMeatAmount();
+
+            int[] tmpDayStamps = myAccount.weeks[myAccount.payments - 4].getDays();
+            for(int i = 6; i >= dayMeatWeek; i--) {                                     //Holt sich alle nötigen Tage vor den 3 Wochen
+                totalMeat28 += tmpDayStamps[i];
+            }
+
+            tmpDayStamps = myAccount.weeks[myAccount.payments].getDays();               //Updated Variable!
+            for(int i = 0; i < dayMeatWeek; i++) {                                      //Holt sich alle nötigen Tage nach den drei Wochen.
+                totalMeat28 += tmpDayStamps[i];
+            }
+            return totalMeat28 / 4;
+        } else {
+            return averagePerDay() * 7;                                                 //Falls noch keine 28 Tage vergangen sind ist der Wochendurchschnitt der
+        }                                                                               //letzten 28 Tage = dem totalen Wochendurchschnitt.
+    }
+
+    public int eatenLastMonth() {
+        int amount = 0;
+        for(int i = myAccount.payments - 4; i < myAccount.payments; i++) {
+            amount += myAccount.weeks[i].getMeatAmount();
+        }
+        return amount;
+    }
+
+    public int averagePerDay() {
+        int totalDays = 0;
+        int totalMeat = 0;
+        for(int i = 0; i < myAccount.payments; i++) {
+            totalMeat += myAccount.weeks[i].getMeatAmount();
+            totalDays += 7;
+        }
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.creationDate.dayOfWeek) % 7) + 7) % 7);
+
+        if(myAccount.creationDate.dayOfWeek == calendar.get(Calendar.DAY_OF_WEEK) &&        //Falls der Paymenttag schon angebrochen, aber es noch kein Payment gab!
+                myAccount.creationDate.hour > calendar.get(Calendar.HOUR_OF_DAY)) {
+            dayOfWeek = 6;
+            totalDays += 1;
+        }
+        for(int n = 0; n <= dayOfWeek; n++) {                       //Hier wird nurnoch die angebrochene Woche betrachtet!
+            totalMeat += myAccount.weeks[myAccount.payments].getDays()[n];
+            totalDays += 1;
+        }
+        saveData();
+        return totalMeat / totalDays;
+    }
+
+    public void loadFact() {
+        Calendar calendar = Calendar.getInstance();
+        int dayOfWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.creationDate.dayOfWeek) % 7) + 7) % 7);
+        if(calendar.get(Calendar.HOUR_OF_DAY) < myAccount.creationDate.hour) {
+            dayOfWeek = (dayOfWeek + 6) % 7;                        //Falls die Zahlstunde noch nicht erreicht wurde!
+        }
+
+        int totalMeat = 0;
+        for(int i = 0; i < myAccount.payments + 1; i++) {
+            totalMeat += myAccount.weeks[i].getMeatAmount();
+        }
+        int totalAverageMeat = myAccount.payments * MEAT_WEEK_EU + dayOfWeek * (MEAT_WEEK_EU / 7);
+        if(totalAverageMeat == 0) {                                 //Das TotalAverageMeat sollte sinnvollerweise niemals 0 sein.
+            totalAverageMeat = (MEAT_WEEK_EU / 7);
+        }
+
+        int lessMeat = totalAverageMeat - totalMeat;
+        if(lessMeat < 0) {
+            lessMeat = 0;
+        }
+
+        switch (factSwitch) {
+            case 0:
+                factSwitch = 1;
+                setFactOne(lessMeat);
+                break;
+            case 1:
+                factSwitch = 2;
+                setFactTwo(totalMeat, totalAverageMeat);
+                break;
+            case 2:
+                factSwitch = 3;
+                setFactThree(lessMeat);
+                break;
+            case 3:
+                factSwitch = 0;
+                setFactFour(lessMeat);
+                break;
+            default:
+                throw new IllegalStateException("case existiert nicht! Es gibt nur 0, 1, 2, 3!");
+        }
+    }
+
+    private void setFactOne(int lessMeat) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        String lessKilo;
+        if(lessMeat / 1000.0 < 100) {
+            lessKilo = df.format(lessMeat / 1000.0);       //Gramm wird in Kilo (2 Nachkomma Stellen) umgewandelt
+        } else {
+            lessKilo = MainActivity.beautifulNumber(lessMeat / 1000);    //Ohne Nachkommastellen
+        }
+        String str1 = getResources().getString(R.string.since_first_week) + " ";
+        String strKilo = " " + getResources().getString(R.string.kilos);
+        String str2 =  strKilo + " " + getResources().getString(R.string.kilos_less);
+        SpannableString spString = new SpannableString(
+                str1 + lessKilo + str2);
+        int endOfImportantString = str1.length() + lessKilo.length() + strKilo.length();
+        spString.setSpan(new RelativeSizeSpan(2.0f), str1.length(),
+                endOfImportantString, 0); // set size
+        spString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.accent_in_green)), str1.length(),
+                endOfImportantString, 0);
+        tvFact.setText(spString);
+    }
+
+    private void setFactTwo(int totalMeat, int totalAverageMeat) {
+        DecimalFormat df = new DecimalFormat("0.0");
+
+        String lessPercent = df.format((100.0 * totalMeat) / totalAverageMeat);
+
+        String str1 = getResources().getString(R.string.thats) + " ";
+        String str2 = getResources().getString(R.string.percent_average);
+        SpannableString spString = new SpannableString(
+                str1 + lessPercent + str2);
+        int endOfImportantString = str1.length() + lessPercent.length() + 1;
+        spString.setSpan(new RelativeSizeSpan(2.0f), str1.length(),
+                endOfImportantString, 0); // set size
+        spString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.accent_in_green)), str1.length(),
+                endOfImportantString, 0);
+        tvFact.setText(spString);
+    }
+
+    private void setFactThree(int lessMeat) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        String lessKm;
+        double km = (((lessMeat / 1000.0) * CO2_PER_KILO) / CO2_PER_KM);
+        if(km < 1000) {
+            lessKm = df.format(km);
+        } else {
+            lessKm = MainActivity.beautifulNumber((int) km);
+        }
+        String str1 = getResources().getString(R.string.means_for_emissions) + " ";
+        String strKm = " " + getResources().getString(R.string.kilometres);
+        String str2 = strKm + " " + getResources().getString(R.string.less_cardriving);
+        SpannableString spString = new SpannableString(
+                str1 + lessKm + str2);
+        int endOfImportantString = str1.length() + lessKm.length() + strKm.length();
+        spString.setSpan(new RelativeSizeSpan(2.0f), str1.length(),
+                endOfImportantString, 0);
+        spString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.accent_in_green)), str1.length(),
+                endOfImportantString, 0);
+        tvFact.setText(spString);
+    }
+
+    public void setFactFour(int lessMeat) {
+        double trucks = ((lessMeat / 1000.0) * LITER_PER_KILO) / LITER_PER_TRUCK;
+        String strTrucks;
+        if(trucks < 10) {
+            DecimalFormat df = new DecimalFormat("0.00");
+            strTrucks = df.format(trucks);
+        } else {
+            strTrucks = MainActivity.beautifulNumber((int) trucks);
+        }
+        String str1 = getResources().getString(R.string.water_saved) + " ";
+        String str2 = " " + getResources().getString(R.string.tanker_trucks);
+        SpannableString spString = new SpannableString(
+                str1 + strTrucks + str2);
+        int endOfImportantString = str1.length() + strTrucks.length();
+        spString.setSpan(new RelativeSizeSpan(2.0f), str1.length(),
+                endOfImportantString, 0);
+        spString.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.accent_in_green)), str1.length(),
+                endOfImportantString, 0);
+        tvFact.setText(spString);
+    }
+
+    public void loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("account", null);
+        Type type = new TypeToken<Account>() {}.getType();
+        myAccount = gson.fromJson(json, type);
+
+        //myAccount kann null sein, wenn noch nichts gespeichert wurde!
+    }
+
+    public void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(myAccount);
+        editor.putString("account", json);
+        editor.apply();
+    }
+
+}

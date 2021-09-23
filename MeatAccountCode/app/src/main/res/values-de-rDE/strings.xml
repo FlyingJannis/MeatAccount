@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MeatAccount</string>
+    <string name="app_name_pro">MeatAccount PRO</string>
+    <string name="statistics">Statistik</string>
+    <string name="create_account">Ein neues Konto erstellen</string>
+    <string name="weeks">Wochen</string>
+    <string name="button_explanation">Gib deinen Fleischkonsum in Gramm ein:</string>
+    <string name="graph_title">Wöchentlicher Fleischkonsum (in Gramm):</string>
+    <string name="no_stats">Statistiken sind erst nach\ndeiner ersten Woche verfügbar</string>
+    <string name="vegetarian">Wenn Du dich vegetarisch ernähren willst, brauchst du MeatAccount nicht mehr.</string>
+    <string name="calm_down">Okay, bleib cool! Du zweckentfremdest MeatAccount…</string>
+    <string name="weekly_amount">Dein wöchentlicher Betrag Fleisch:</string>
+    <string name="average_day">Durchschnittlicher\nFleischkonsum pro Tag:</string>
+    <string name="eaten_month">Wochenkonsum in den letzten 28 Tagen (Ø):</string>
+    <string name="payday">Zahltag:</string>
+    <string name="sunday">Sonntag</string>
+    <string name="saturday">Samstag</string>
+    <string name="friday">Freitag</string>
+    <string name="thursday">Donnerstag</string>
+    <string name="wednesday">Mittwoch</string>
+    <string name="tuesday">Dienstag</string>
+    <string name="monday">Montag</string>
+    <string name="undo">rückgängig</string>
+    <string name="accept">bestätigen</string>
+    <string name="choose_meat">Bitte wähle deinen wöchentlichen Betrag Fleisch:</string>
+    <string name="balance">Aktueller Kontostand:</string>
+    <string name="three_months">3 Monate</string>
+    <string name="total">insgesamt</string>
+    <string name="last_year">1 Jahr</string>
+    <string name="since_first_week">Seit deiner ersten Woche hast du\n</string>
+    <string name="kilos">Kilo</string>
+    <string name="kilos_less">\nweniger Fleisch als der Durchschnitts Europäer gegessen!</string>
+    <string name="thats">Das entspricht\n</string>
+    <string name="percent_average">%\ndes durchschnittlichen Fleischkonsums eines Europäers.</string>
+    <string name="means_for_emissions">Die CO2 Emissionen, die du dadurch eingespart hast, entsprechen\n</string>
+    <string name="kilometres">km\n</string>
+    <string name="less_cardriving">mit dem Auto zu fahren.</string>
+    <string name="point">.</string>
+    <string name="delete_account">Konto löschen</string>
+    <string name="delete_message">Bist du sicher, dass du dein Fleischkonto komplett resetten willst?
+        Du kannst danach nicht mehr auf deine alten Daten zugreifen!</string>
+    <string name="cancel">abbrechen</string>
+    <string name="sure">Bist du dir sicher?</string>
+    <string name="really_sure">Bist du dir wirklich sicher?!</string>
+    <string name="give_up_meat">Auf 100g Fleisch verzichten:</string>
+    <string name="actual_weekly_meet">Durchschnittlicher Wochenkonsum (Ø):</string>
+    <string name="cant_giveup">Du kannst nicht auf 100g Fleisch verzichten, da du ansonsten dein Konto überziehst…</string>
+    <string name="days_since">Tage seit deines letzten Fleischkonsums:</string>
+    <string name="water_saved">Mit dem Wasser, das du damit eingespart hast, könnte man\n</string>
+    <string name="tanker_trucks">\ngroße Tanklastwagen befüllen!</string>
+    <string name="amount_recieved">Du hast</string>
+    <string name="amount_recieved_end">neues Fleisch auf dein Fleischkonto überwiesen bekommen!</string>
+    <string name="new_meat">Neues Fleisch!</string>
+    <string name="new_meat_text">Du hast neues Fleisch auf deinem Fleischkonto gutgeschrieben bekommen. Los sieh\'s dir an!</string>
+    <string name="new_meat_channel_describtion">Channel um an neues Fleisch erinnert zu werden</string>
+    <string name="welcome1">Willkommen bei MeatAccount!\n\nMeatAccount hilft dir dabei, deinen Fleischkonsum
+        zu tracken und systematisch zu reduzieren.\n\nDie Umwelt wird es dir danken!</string>
+    <string name="welcome2">Du wirst gleich dein erstes Fleisch Konto eröffnen!\n\nDein festgelegter Wochenbetrag
+        an Fleisch wird dir dann jede Woche zur gleichen Zeit überwiesen!</string>
+    <string name="welcome3">Wann immer du ab sofort Fleisch isst, buchst du die entsprechende Menge an Fleisch
+        von deinem Fleischkonto ab.\n\nGanz einfach!</string>
+    <string name="welcome4">In deinen Statistiken kannst du live mitverfolgen, welchen Einfluss dein Verzicht
+        auf die Umwelt hat!</string>
+    <string name="welcome5">Alles klar?\nDann los geht\'s!</string>
+
+
+
+    <string name="app_id">ca-app-pub-8498756977378374~3852068180</string>
+
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#090909</color>
+    <color name="colorPrimaryDark">#090909</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="green">#23B574</color>
+    <color name="secondary_color">#B686E0</color>
+    <color name="secondary_color1">#AF71E2</color>
+    <color name="secondary_color2">#B686E0</color>
+    <color name="lightGreen">#4CDB9B</color>
+    <color name="orange">#F39C11</color>
+    <color name="red">#E84C3D</color>
+    <color name="darker_red">#B73D38</color>
+    <color name="black">#1C1C1C</color>
+    <color name="white">#FFFFFF</color>
+    <color name="decent_white">#66FFFFFF</color>
+    <color name="grey">#686868</color>
+    <color name="decent">#B0282828</color>
+    <color name="dark">#000000</color>
+    <color name="faded">#E0000000</color>
+    <color name="darker_white">#C8C8C8</color>
+    <color name="darker_green">#1E995F</color>
+
+    <color name="text_in_boxes">#BDBDBD</color>
+    <color name="numbers_in_boxes">#FAFAFA</color>
+    <color name="text_in_green_box">#EEEEEE</color>
+    <color name="accent_in_green">#FFFFFF</color>
+
+    <color name="darkmode_green">#00D3BB</color>
+
+    <color name="dark_background">#242424</color>
+    <color name="darker_background2">#161616</color>
+    <color name="darker_background">#121212</color>
+
+
+</resources>

@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount;
+package com.flyingjannis.meataccount.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -11,7 +11,6 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,6 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flyingjannis.meataccount.R;
+import com.flyingjannis.meataccount.model.Account;
+import com.flyingjannis.meataccount.model.RepeatListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -124,9 +126,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonAmountDown.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(myAccount.weeklyAmount >= 20) {
-                    myAccount.weeklyAmount = myAccount.weeklyAmount - 10;
-                    tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.weeklyAmount));
+                if(myAccount.getWeeklyAmount() >= 20) {
+                    myAccount.setWeeklyAmount(myAccount.getWeeklyAmount() - 10);
+                    tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
                     saveData();
                 } else {
                     makeToast(getResources().getString(R.string.vegetarian), Toast.LENGTH_SHORT);
@@ -139,9 +141,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonAmountUp.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(myAccount.weeklyAmount <= 990) {
-                    myAccount.weeklyAmount = myAccount.weeklyAmount + 10;
-                    tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.weeklyAmount));
+                if(myAccount.getWeeklyAmount() <= 990) {
+                    myAccount.setWeeklyAmount(myAccount.getWeeklyAmount() + 10);
+                    tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
                     saveData();
                 } else {
                     makeToast(getResources().getString(R.string.calm_down), Toast.LENGTH_SHORT);
@@ -169,14 +171,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         unselectAll();
 
 
-        if(myAccount.payments > 52) {                   //über ein Jahr sind vergangen
+        if(myAccount.getPayments() > 52) {                   //über ein Jahr sind vergangen
             button3Month.setVisibility(View.VISIBLE);
             buttonYear.setVisibility(View.VISIBLE);
             buttonTotal.setVisibility(View.VISIBLE);
 
             graphState = 0;
             button3Month.setSelected(true);
-        } else if(myAccount.payments > 12) {            //über 3 Monate sind vergangen
+        } else if(myAccount.getPayments() > 12) {            //über 3 Monate sind vergangen
             button3Month.setVisibility(View.VISIBLE);
             buttonTotal.setVisibility(View.VISIBLE);
 
@@ -195,7 +197,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         } else {
             tvLastMeat.setText("?");
         }
-        tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.weeklyAmount));
+        tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
 
         loadFact();                                 //hier wurde entfernt, dass Facts erst nach einer Woche geladen werden.
 
@@ -230,10 +232,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 }
                 break;
             case R.id.button100Less:
-                if(myAccount.balance >= 100) {                  //Man soll durch das Verzichten nicht ins Minus geraten können!
+                if(myAccount.getBalance() >= 100) {                  //Man soll durch das Verzichten nicht ins Minus geraten können!
                     acceptMode = true;
                     changeButtons();
-                    tvBalanceSettings.setText(MainActivity.beautifulWeight(myAccount.balance - 100));
+                    tvBalanceSettings.setText(MainActivity.beautifulWeight(myAccount.getBalance() - 100));
                 } else {
                     makeToast(getResources().getString(R.string.cant_giveup), Toast.LENGTH_SHORT);
                 }
@@ -241,7 +243,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.buttonAcceptGiveUp:
                 acceptMode = false;
                 changeButtons();
-                myAccount.balance = myAccount.balance - 100;
+                myAccount.setBalance(myAccount.getBalance() - 100);
                 updateBalance();
                 saveData();
                 break;
@@ -302,7 +304,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void updateBalance() {
-        tvBalanceSettings.setText(MainActivity.beautifulWeight(myAccount.balance));
+        tvBalanceSettings.setText(MainActivity.beautifulWeight(myAccount.getBalance()));
     }
 
 
@@ -325,14 +327,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     public void totalDataAsGraph() {
         graphView.setTitle(getResources().getString(R.string.graph_title));
-        if(myAccount.payments > 0) {
+        if(myAccount.getPayments() > 0) {
             statsAvailable = true;
 
             DataPoint[] average;
 
             DataPoint[] totalData;
             if(graphState == 0) {                       //letzten 3 Monate
-                graphView.getViewport().setMinX(myAccount.payments - 12);
+                graphView.getViewport().setMinX(myAccount.getPayments() - 12);
 
                 DataPoint[] tmp = new DataPoint[13];
                 DataPoint[] data = getTotalData();
@@ -344,10 +346,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 //Jetzt noch Average anpassen!
                 average = new DataPoint[13];
                 for(int i = 0; i < 13; i++) {
-                    average[i] = new DataPoint(myAccount.payments - 12 + i, myAccount.weeklyAmount);
+                    average[i] = new DataPoint(myAccount.getPayments() - 12 + i, myAccount.getWeeklyAmount());
                 }
             } else if(graphState == 1) {                //Letztes Jahr
-                graphView.getViewport().setMinX(myAccount.payments - 52);
+                graphView.getViewport().setMinX(myAccount.getPayments() - 52);
 
                 DataPoint[] tmp = new DataPoint[53];
                 DataPoint[] data = getTotalData();
@@ -358,15 +360,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
                 average = new DataPoint[53];
                 for(int i = 0; i < 53; i++) {
-                    average[i] = new DataPoint(myAccount.payments - 52 + i, myAccount.weeklyAmount);
+                    average[i] = new DataPoint(myAccount.getPayments() - 52 + i, myAccount.getWeeklyAmount());
                 }
             } else if(graphState == 2) {                //Total
                 graphView.getViewport().setMinX(0);
 
                 totalData = reduceData(getTotalData());
-                average = new DataPoint[myAccount.payments + 1];
-                for(int i = 0; i < myAccount.payments + 1; i++) {
-                    average[i] = new DataPoint(i, myAccount.weeklyAmount);
+                average = new DataPoint[myAccount.getPayments() + 1];
+                for(int i = 0; i < myAccount.getPayments() + 1; i++) {
+                    average[i] = new DataPoint(i, myAccount.getWeeklyAmount());
                 }
             } else {
                 throw new RuntimeException("graphState has to be one of 0, 1 or 2!");
@@ -382,7 +384,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             series.setDrawDataPoints(true);
             series.setDataPointsRadius(1);
 
-            DataPoint[] tmp = {new DataPoint(myAccount.payments, 0)};   //Setzt ans Ende des Graphen einen Punkt, damit bis 0 skaliert wird auf der y-Achse
+            DataPoint[] tmp = {new DataPoint(myAccount.getPayments(), 0)};   //Setzt ans Ende des Graphen einen Punkt, damit bis 0 skaliert wird auf der y-Achse
             graphView.addSeries(new LineGraphSeries<DataPoint>(tmp));
             graphView.addSeries(averageLine);
             graphView.addSeries(series);
@@ -392,14 +394,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             graphView.getGridLabelRenderer().setHorizontalLabelsColor(getResources().getColor(R.color.white));
             graphView.getGridLabelRenderer().setVerticalLabelsColor(getResources().getColor(R.color.white));
 
-            if(myAccount.payments < 4) {
-                graphView.getGridLabelRenderer().setNumHorizontalLabels(myAccount.payments + 1);
+            if(myAccount.getPayments() < 4) {
+                graphView.getGridLabelRenderer().setNumHorizontalLabels(myAccount.getPayments() + 1);
             } else {
                 //graphView.getGridLabelRenderer().setNumHorizontalLabels(3);
             }
 
             graphView.getViewport().setXAxisBoundsManual(true);
-            graphView.getViewport().setMaxX(myAccount.payments);
+            graphView.getViewport().setMaxX(myAccount.getPayments());
 
             graphView.getViewport().setYAxisBoundsManual(true);         //Passt Y-Achse an
             graphView.getViewport().setMaxY(getBorder(totalData));
@@ -414,7 +416,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         } else {
             graphView.getGridLabelRenderer().setNumHorizontalLabels(2);
             graphView.getViewport().setYAxisBoundsManual(true);
-            graphView.getViewport().setMaxY(myAccount.weeklyAmount);
+            graphView.getViewport().setMaxY(myAccount.getWeeklyAmount());
             graphView.getGridLabelRenderer().setHorizontalAxisTitle(getResources().getString(R.string.weeks));
             graphView.getGridLabelRenderer().setNumVerticalLabels(6);
         }
@@ -427,15 +429,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 max = (int) data[i].getY();
             }
         }
-        int tmp = max / myAccount.weeklyAmount;
-        return tmp * myAccount.weeklyAmount + myAccount.weeklyAmount;
+        int tmp = max / myAccount.getWeeklyAmount();
+        return tmp * myAccount.getWeeklyAmount() + myAccount.getWeeklyAmount();
     }
 
     public DataPoint[] getTotalData() {
-        DataPoint[] result = new DataPoint[myAccount.payments + 1];     //Aktuelle Woche wird nicht miteinbezogen!
-        result[0] = new DataPoint(0, myAccount.weeklyAmount);           //Graph startet beim festgelegtem Durchschnitt
+        DataPoint[] result = new DataPoint[myAccount.getPayments() + 1];     //Aktuelle Woche wird nicht miteinbezogen!
+        result[0] = new DataPoint(0, myAccount.getWeeklyAmount());           //Graph startet beim festgelegtem Durchschnitt
         for(int i = 1; i < result.length; i++) {
-            result[i] = new DataPoint(i, myAccount.weeks[i - 1].getMeatAmount());
+            result[i] = new DataPoint(i, myAccount.getWeeks()[i - 1].getMeatAmount());
         }
         saveData();
         return result;
@@ -469,11 +471,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public int daysSinceLastMeat() {
         int counter = 0;
         boolean foundMeat = false;
-        int i = myAccount.payments;
+        int i = myAccount.getPayments();
         while(i >= 0 && !foundMeat) {
             int j = 6;
             while(j >= 0 && !foundMeat) {
-                if(myAccount.weeks[i].getDays()[j] > 0) {
+                if(myAccount.getWeeks()[i].getDays()[j] > 0) {
                     foundMeat = true;
                 } else {
                     counter++;
@@ -486,8 +488,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             return -1;
         }
         Calendar calendar = Calendar.getInstance();
-        int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.creationDate.dayOfWeek) % 7) + 7) % 7);
-        boolean afterPayHour = calendar.get(Calendar.HOUR_OF_DAY) >= myAccount.creationDate.hour;
+        int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
+        boolean afterPayHour = calendar.get(Calendar.HOUR_OF_DAY) >= myAccount.getCreationDate().getHour();
         if(dayMeatWeek == 0 && !afterPayHour) {
             counter = counter + 1;
         } else {
@@ -497,19 +499,19 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public int averageWeekLast28Days() {
-        if(myAccount.payments >= 4) {
+        if(myAccount.getPayments() >= 4) {
             Calendar calendar = Calendar.getInstance();
-            int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.creationDate.dayOfWeek) % 7) + 7) % 7);
-            int totalMeat28 = myAccount.weeks[myAccount.payments - 1].getMeatAmount() +             //Die drei letzten abgeschlossenen Wochen.
-                    myAccount.weeks[myAccount.payments - 2].getMeatAmount() +
-                    myAccount.weeks[myAccount.payments - 3].getMeatAmount();
+            int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
+            int totalMeat28 = myAccount.getWeeks()[myAccount.getPayments() - 1].getMeatAmount() +             //Die drei letzten abgeschlossenen Wochen.
+                    myAccount.getWeeks()[myAccount.getPayments() - 2].getMeatAmount() +
+                    myAccount.getWeeks()[myAccount.getPayments() - 3].getMeatAmount();
 
-            int[] tmpDayStamps = myAccount.weeks[myAccount.payments - 4].getDays();
+            int[] tmpDayStamps = myAccount.getWeeks()[myAccount.getPayments() - 4].getDays();
             for(int i = 6; i >= dayMeatWeek; i--) {                                     //Holt sich alle nötigen Tage vor den 3 Wochen
                 totalMeat28 += tmpDayStamps[i];
             }
 
-            tmpDayStamps = myAccount.weeks[myAccount.payments].getDays();               //Updated Variable!
+            tmpDayStamps = myAccount.getWeeks()[myAccount.getPayments()].getDays();               //Updated Variable!
             for(int i = 0; i < dayMeatWeek; i++) {                                      //Holt sich alle nötigen Tage nach den drei Wochen.
                 totalMeat28 += tmpDayStamps[i];
             }
@@ -521,8 +523,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     public int eatenLastMonth() {
         int amount = 0;
-        for(int i = myAccount.payments - 4; i < myAccount.payments; i++) {
-            amount += myAccount.weeks[i].getMeatAmount();
+        for(int i = myAccount.getPayments() - 4; i < myAccount.getPayments(); i++) {
+            amount += myAccount.getWeeks()[i].getMeatAmount();
         }
         return amount;
     }
@@ -530,20 +532,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public int averagePerDay() {
         int totalDays = 0;
         int totalMeat = 0;
-        for(int i = 0; i < myAccount.payments; i++) {
-            totalMeat += myAccount.weeks[i].getMeatAmount();
+        for(int i = 0; i < myAccount.getPayments(); i++) {
+            totalMeat += myAccount.getWeeks()[i].getMeatAmount();
             totalDays += 7;
         }
         Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.creationDate.dayOfWeek) % 7) + 7) % 7);
+        int dayOfWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
 
-        if(myAccount.creationDate.dayOfWeek == calendar.get(Calendar.DAY_OF_WEEK) &&        //Falls der Paymenttag schon angebrochen, aber es noch kein Payment gab!
-                myAccount.creationDate.hour > calendar.get(Calendar.HOUR_OF_DAY)) {
+        if(myAccount.getCreationDate().getDayOfWeek() == calendar.get(Calendar.DAY_OF_WEEK) &&        //Falls der Paymenttag schon angebrochen, aber es noch kein Payment gab!
+                myAccount.getCreationDate().getHour() > calendar.get(Calendar.HOUR_OF_DAY)) {
             dayOfWeek = 6;
             totalDays += 1;
         }
         for(int n = 0; n <= dayOfWeek; n++) {                       //Hier wird nurnoch die angebrochene Woche betrachtet!
-            totalMeat += myAccount.weeks[myAccount.payments].getDays()[n];
+            totalMeat += myAccount.getWeeks()[myAccount.getPayments()].getDays()[n];
             totalDays += 1;
         }
         saveData();
@@ -552,16 +554,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     public void loadFact() {
         Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.creationDate.dayOfWeek) % 7) + 7) % 7);
-        if(calendar.get(Calendar.HOUR_OF_DAY) < myAccount.creationDate.hour) {
+        int dayOfWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
+        if(calendar.get(Calendar.HOUR_OF_DAY) < myAccount.getCreationDate().getHour()) {
             dayOfWeek = (dayOfWeek + 6) % 7;                        //Falls die Zahlstunde noch nicht erreicht wurde!
         }
 
         int totalMeat = 0;
-        for(int i = 0; i < myAccount.payments + 1; i++) {
-            totalMeat += myAccount.weeks[i].getMeatAmount();
+        for(int i = 0; i < myAccount.getPayments() + 1; i++) {
+            totalMeat += myAccount.getWeeks()[i].getMeatAmount();
         }
-        int totalAverageMeat = myAccount.payments * MEAT_WEEK_EU + dayOfWeek * (MEAT_WEEK_EU / 7);
+        int totalAverageMeat = myAccount.getPayments() * MEAT_WEEK_EU + dayOfWeek * (MEAT_WEEK_EU / 7);
         if(totalAverageMeat == 0) {                                 //Das TotalAverageMeat sollte sinnvollerweise niemals 0 sein.
             totalAverageMeat = (MEAT_WEEK_EU / 7);
         }

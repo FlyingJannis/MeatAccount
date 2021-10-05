@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/steak_hintergrund"
-    tools:context=".CreateAmountActivity">
+    tools:context=".activities.CreateAmountActivity">
 
     <TextView
         android:id="@+id/tvAmount"

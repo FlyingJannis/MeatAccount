@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount;
+package com.flyingjannis.meataccount.model;
 
 public class WeekStamp {
     private int[] days = new int[7];

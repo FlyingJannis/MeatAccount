@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount;
+package com.flyingjannis.meataccount.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -11,11 +11,13 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.flyingjannis.meataccount.R;
+import com.flyingjannis.meataccount.model.Account;
+import com.flyingjannis.meataccount.model.TutorialsReceived;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -71,7 +73,7 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
 
 
         loadData();
-        if(tutorialsReceived.createAmountTutorialReceived) {
+        if(tutorialsReceived.isCreateAmountTutorialReceived()) {
             enableButtons(true);
         } else {
             Objects.requireNonNull(getSupportActionBar()).hide();
@@ -177,7 +179,7 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
                 Objects.requireNonNull(getSupportActionBar()).show();
                 clWelcome.setVisibility(View.GONE);
                 enableButtons(true);
-                tutorialsReceived.createAmountTutorialReceived = true;
+                tutorialsReceived.setCreateAmountTutorialReceived(true);
                 break;
             default:
                 throw new IllegalStateException("Just 5 cases!");

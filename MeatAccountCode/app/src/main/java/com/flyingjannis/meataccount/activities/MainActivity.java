@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount;
+package com.flyingjannis.meataccount.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -19,10 +19,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flyingjannis.meataccount.Broadcasts.NewMeatBroadcastDE;
-import com.flyingjannis.meataccount.Broadcasts.NewMeatBroadcastEN;
-import com.flyingjannis.meataccount.Broadcasts.ReminderBroadcastDE;
-import com.flyingjannis.meataccount.Broadcasts.ReminderBroadcastEN;
+import com.flyingjannis.meataccount.R;
+import com.flyingjannis.meataccount.broadcasts.NewMeatBroadcastDE;
+import com.flyingjannis.meataccount.broadcasts.NewMeatBroadcastEN;
+import com.flyingjannis.meataccount.broadcasts.ReminderBroadcastDE;
+import com.flyingjannis.meataccount.broadcasts.ReminderBroadcastEN;
+import com.flyingjannis.meataccount.model.Account;
+import com.flyingjannis.meataccount.model.TutorialsReceived;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -48,10 +51,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int payments = howManyPayments();               //howManyPayments() updated das payments-Fled (Anzahl der bisherigen Zahlungen), kann also nur einmal sinnvoll verwendet werden.
                 if(payments > 0) {
                     makeToast(getResources().getString(R.string.amount_recieved) + " " +
-                        beautifulWeight(payments * myAccount.weeklyAmount) + " " +
+                        beautifulWeight(payments * myAccount.getWeeklyAmount()) + " " +
                         getResources().getString(R.string.amount_recieved_end), Toast.LENGTH_LONG);
                 }
-                pay(payments * myAccount.weeklyAmount);         //draw() ist in pay() enthalten!
+                pay(payments * myAccount.getWeeklyAmount());         //draw() ist in pay() enthalten!
                 handler.postDelayed(runnable, 10000);
                 saveData();
             }
@@ -180,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.buttonAcceptMinus:
                 loadData();
-                myAccount.balance = myAccount.balance + actualMinus;
+                myAccount.setBalance(myAccount.getBalance() + actualMinus);
                 myAccount.addMeatDay(- actualMinus);                        //Abbuchung wird in den Statistiken vermerkt!
                 actualMinus = 0;
                 buttonUndo.setVisibility(View.GONE);
@@ -301,18 +304,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void draw() {        //Die Else-Fälle, falls Versionscode zum Animieren zu niedrig!
-        if(myAccount.balance >= 0) {
+        if(myAccount.getBalance() >= 0) {
             setShadowForMinus(false);
             progressBar.setVisibility(View.VISIBLE);
             progressBarRed.setVisibility(View.GONE);
-            if(myAccount.weeklyAmount < myAccount.balance) {
+            if(myAccount.getWeeklyAmount() < myAccount.getBalance()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     progressBar.setProgress(100, true);
                 } else {
                     progressBar.setProgress(100);
                 }
             } else {
-                int balancePercent = (int) Math.round((double) myAccount.balance / (double) myAccount.weeklyAmount * 100);
+                int balancePercent = (int) Math.round((double) myAccount.getBalance() / (double) myAccount.getWeeklyAmount() * 100);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     progressBar.setProgress(balancePercent, true);
                 } else {
@@ -328,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //progressBarRed.setProgress(0);
             progressBar.setVisibility(View.GONE);
             progressBarRed.setVisibility(View.VISIBLE);
-            if(myAccount.weeklyAmount < -myAccount.balance) {
+            if(myAccount.getWeeklyAmount() < -myAccount.getBalance()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     progressBarRed.setProgress(100, true);
                 } else {
@@ -336,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 setShadowForMinus(true);
             } else {
-                int balancePercent = (int) Math.round((double) -myAccount.balance / (double) myAccount.weeklyAmount * 100);
+                int balancePercent = (int) Math.round((double) -myAccount.getBalance() / (double) myAccount.getWeeklyAmount() * 100);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     progressBarRed.setProgress(balancePercent, true);
                 } else {
@@ -352,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-        tvBalance.setText(beautifulWeight(myAccount.balance));
+        tvBalance.setText(beautifulWeight(myAccount.getBalance()));
         tvPayday.setText(paydayString());
     }
 
@@ -367,21 +370,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public int howManyPayments() {
         loadData();
         Calendar calendar = Calendar.getInstance();
-        int currentPayments = myAccount.payments;
-        long milliDif = calendar.getTimeInMillis() - myAccount.creationDateMillis;
+        int currentPayments = myAccount.getPayments();
+        long milliDif = calendar.getTimeInMillis() - myAccount.getCreationDateMillis();
 
         if(correctTimeZone(milliDif) == -1 || correctTimeZone(milliDif) == 1) {         //Sehr umständlich um sich an Sommer und Winterzeit anzupassen!
             myAccount.changeCreationHour(correctTimeZone(milliDif));
         }
-        myAccount.payments = (int) (milliDif / 604800000);    //604800000
+        myAccount.setPayments((int) (milliDif / 604800000));   //604800000
         saveData();
-        return myAccount.payments - currentPayments;
+        return myAccount.getPayments() - currentPayments;
     }
 
     private int correctTimeZone(long millisPassed) {
         long millisThisWeek = millisPassed % 604800000;
         long millisThisDay = millisThisWeek % 86400000;
-        int expectedHour = myAccount.creationDate.hour + ((int) millisThisDay / 3600000);
+        int expectedHour = myAccount.getCreationDate().getHour() + ((int) millisThisDay / 3600000);
         if(expectedHour > 23) {
             expectedHour -= 24;
         }
@@ -391,14 +394,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void pay(int amount) {
-        myAccount.balance = myAccount.balance + amount;
+        myAccount.setBalance(myAccount.getBalance() + amount);
         saveData();
         draw();
     }
 
     public String paydayString() {
         String result = getResources().getString(R.string.payday) + "\n";
-        switch (myAccount.creationDate.dayOfWeek) {
+        switch (myAccount.getCreationDate().getDayOfWeek()) {
             case 2:
                 result = result + getResources().getString(R.string.monday) + ", ";
                 break;
@@ -421,9 +424,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 result = result + getResources().getString(R.string.sunday) + ", ";
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + myAccount.creationDate.dayOfWeek);
+                throw new IllegalStateException("Unexpected value: " + myAccount.getCreationDate().getDayOfWeek());
         }
-        return result + myAccount.creationDate.hour + ":00";
+        return result + myAccount.getCreationDate().getHour() + ":00";
     }
 
     public void startNotificationTimerNewMeat() {
@@ -449,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private long millisTilNextPay() {
         Calendar calendar = Calendar.getInstance();
-        long milliDif = calendar.getTimeInMillis() - myAccount.creationDateMillis;
+        long milliDif = calendar.getTimeInMillis() - myAccount.getCreationDateMillis();
 
         return 604800000 - (milliDif % 604800000);
     }

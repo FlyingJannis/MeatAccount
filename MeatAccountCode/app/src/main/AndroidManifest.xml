@@ -9,15 +9,15 @@
         android:roundIcon="@drawable/icon_rund2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SettingsActivity"
+        <activity android:name=".activities.SettingsActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".CreateAmountActivity"
+            android:name=".activities.CreateAmountActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -26,10 +26,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".Broadcasts.NewMeatBroadcastDE"/>
-        <receiver android:name=".Broadcasts.NewMeatBroadcastEN"/>
-        <receiver android:name=".Broadcasts.ReminderBroadcastDE"/>
-        <receiver android:name=".Broadcasts.ReminderBroadcastEN"/>
+        <receiver android:name=".broadcasts.NewMeatBroadcastDE"/>
+        <receiver android:name=".broadcasts.NewMeatBroadcastEN"/>
+        <receiver android:name=".broadcasts.ReminderBroadcastDE"/>
+        <receiver android:name=".broadcasts.ReminderBroadcastEN"/>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/app_id"/>

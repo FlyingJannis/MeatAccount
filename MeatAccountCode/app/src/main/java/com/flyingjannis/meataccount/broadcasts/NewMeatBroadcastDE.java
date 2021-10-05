@@ -1,22 +1,20 @@
-package com.flyingjannis.meataccount.Broadcasts;
+package com.flyingjannis.meataccount.broadcasts;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.flyingjannis.meataccount.MainActivity;
+import com.flyingjannis.meataccount.activities.MainActivity;
 import com.flyingjannis.meataccount.R;
 
-public class NewMeatBroadcastEN extends BroadcastReceiver {
+public class NewMeatBroadcastDE extends BroadcastReceiver {
 
-    public static String title = "New Meat!";
-    public static String text = "You have been added new meat to your meat account. Come and have a look!";
-
+    public static String title = "Neues Fleisch!";
+    public static String text = "Du hast neues Fleisch auf deinem Fleischkonto gutgeschrieben bekommen. Los sieh's dir an!";
 
     @Override
     public void onReceive(Context context, Intent intent) {

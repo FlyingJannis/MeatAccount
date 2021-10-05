@@ -192,7 +192,7 @@
             android:layout_marginBottom="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/info_icon" />
+            app:srcCompat="@drawable/finger_tap_big" />
 
         <TextView
             android:id="@+id/tvWelcomeSpeech"

@@ -101,9 +101,6 @@ public class Account {      //DateSaver speichert mittlerweile viel unnötigen S
         return creationDate;
     }
 
-    public void setCreationDate(DateSaver creationDate) {
-        this.creationDate = creationDate;
-    }
 
     public long getCreationDateMillis() {
         return creationDateMillis;

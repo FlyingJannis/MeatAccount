@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.activities;
+package com.flyingjannis.meataccount.testing;
 
 import com.flyingjannis.meataccount.model.Account;
 import com.flyingjannis.meataccount.model.WeekStamp;

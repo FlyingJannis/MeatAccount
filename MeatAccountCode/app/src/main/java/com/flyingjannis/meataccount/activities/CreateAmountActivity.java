@@ -108,10 +108,10 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch(motionEvent.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
-                        ivBigFingerTap.setBackgroundResource(R.drawable.info_icon); //finger_tap_big_pressed
+                        ivBigFingerTap.setBackgroundResource(R.drawable.finger_tap_big_pressed);
                         break;
                     case MotionEvent.ACTION_UP:
-                        ivBigFingerTap.setBackgroundResource(R.drawable.info_icon); //finger_tap_big
+                        ivBigFingerTap.setBackgroundResource(R.drawable.finger_tap_big);
                         nextMessage();
                         break;
                     default:

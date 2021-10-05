@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.flyingjannis.meataccount.R;
 import com.flyingjannis.meataccount.model.Account;
+import com.flyingjannis.meataccount.model.AccountV2;
 import com.flyingjannis.meataccount.model.RepeatListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -45,7 +46,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public final static double LITER_PER_KILO = 7633; //Ausgerechnet mit jeweiligen Anteilen und Wasserverbrauch der Tierarten
     public final static double LITER_PER_TRUCK = 30000; //DUMMY!!!
 
-    private Account myAccount;
+    private AccountV2 myAccount;
 
     private AdView mAdView;
 
@@ -468,6 +469,48 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * NACHHER LÖSCHEN!
+     * Methode müsste bei 8ter Arrays geändert werden!
+     * Version 1 fertig
+     */
+    public int daysSinceLastMeat() {
+        int counter = 0;
+        boolean foundMeat = false;
+        boolean foundMeatAt8thPlace = false;
+        int i = myAccount.getPayments();
+        while(i >= 0 && !foundMeat) {
+            int j = 7;
+            while(j >= 0 && !foundMeat) {
+                if(myAccount.getWeeks()[i].getDays()[j] > 0) {
+                    foundMeat = true;
+                    foundMeatAt8thPlace = (j == 7);
+                } else {
+                    if(j != 7) {
+                        counter++;
+                    }
+                }
+                j--;
+            }
+            i--;
+        }
+        if(!foundMeat) {            //Falls noch gar kein Fleisch konsumiert wurde!
+            return -1;
+        }
+        if(foundMeatAt8thPlace) {
+            counter = counter - 1;
+        }
+        Calendar calendar = Calendar.getInstance();
+        int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
+        boolean afterPayHour = calendar.get(Calendar.HOUR_OF_DAY) >= myAccount.getCreationDate().getHour();
+        if(dayMeatWeek == 0 && !afterPayHour) {
+            counter = counter + 1;
+        } else {
+            counter = counter - (6 - dayMeatWeek);
+        }
+        return counter;
+    }
+    /*
     public int daysSinceLastMeat() {
         int counter = 0;
         boolean foundMeat = false;
@@ -498,6 +541,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         return counter;
     }
 
+     */
+
+    /**
+     * NACHHER LÖSCHEN!
+     * Methode müsste für 8ter Arrays geändert werden!
+     */
     public int averageWeekLast28Days() {
         if(myAccount.getPayments() >= 4) {
             Calendar calendar = Calendar.getInstance();
@@ -521,6 +570,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }                                                                               //letzten 28 Tage = dem totalen Wochendurchschnitt.
     }
 
+
+    /**
+     * Wird die überhaupt benutzt?
+     */
     public int eatenLastMonth() {
         int amount = 0;
         for(int i = myAccount.getPayments() - 4; i < myAccount.getPayments(); i++) {
@@ -529,6 +582,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         return amount;
     }
 
+    /**
+     * NACHHER LÖSCHEN!
+     * Methode müsste für 8ter Arrays geändert werden!
+     * (Zeile 565ff)
+     */
     public int averagePerDay() {
         int totalDays = 0;
         int totalMeat = 0;

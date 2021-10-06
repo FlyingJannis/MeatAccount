@@ -721,7 +721,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("account", null);
-        Type type = new TypeToken<Account>() {}.getType();
+        Type type = new TypeToken<AccountV2>() {}.getType();
         myAccount = gson.fromJson(json, type);
 
         //myAccount kann null sein, wenn noch nichts gespeichert wurde!

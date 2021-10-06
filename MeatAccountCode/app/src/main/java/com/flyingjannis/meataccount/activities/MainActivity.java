@@ -540,15 +540,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson = new Gson();
         String json = sharedPreferences.getString("account", null);
         Type type = new TypeToken<AccountV2>() {}.getType();
-        try {
-            myAccount = gson.fromJson(json, type);
-        } catch (Exception e) {
-            System.out.println("Account musste umgewandelt werden");
+        myAccount = gson.fromJson(json, type);
+        if(myAccount != null && myAccount.getWeeks()[0].getDays().length == 7) {
+            System.out.println("Account ist veraltet!");
             type = new TypeToken<Account>() {}.getType();
             Account oldAccount = gson.fromJson(json, type);
             myAccount = AccountV2.transformAccount(oldAccount);
         }
-
         //myAccount kann null sein, wenn noch nichts gespeichert wurde!
 
         //Lade TutorialsReceived:

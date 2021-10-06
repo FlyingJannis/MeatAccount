@@ -7,8 +7,6 @@ public class AccountV2 {
      * Dies ist eine geupdatete Klasse von Account, die anstatt WeekStamp WeekStampV2 verwendet. Einen Wochen Stempel mit 8 Tages-Eintrags Feldern
      * Das erste und das letzte sind hierbei jeweils für den gleichen Tag.
      */
-    private String version;
-
     private int balance;
     private int weeklyAmount;
     private int payments;
@@ -19,8 +17,6 @@ public class AccountV2 {
     private long creationDateMillis;
 
     public AccountV2(int weeklyAmount) {
-        this.version = "2";
-        
         this.weeklyAmount = weeklyAmount;
         this.balance = weeklyAmount;
         Calendar calendar = Calendar.getInstance();

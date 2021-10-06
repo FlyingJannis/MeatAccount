@@ -543,6 +543,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             myAccount = gson.fromJson(json, type);
         } catch (Exception e) {
+            System.out.println("Account musste umgewandelt werden");
             type = new TypeToken<Account>() {}.getType();
             Account oldAccount = gson.fromJson(json, type);
             myAccount = AccountV2.transformAccount(oldAccount);

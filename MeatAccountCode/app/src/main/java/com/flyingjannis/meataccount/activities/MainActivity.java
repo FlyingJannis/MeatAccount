@@ -35,6 +35,7 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static long REMINDER_TIME = 172800000;          //3 Tage: 259200000, 2 Tage: 172800000
+    public static boolean loadingCompleted = false;
 
     private AccountV2 myAccount;
     private TutorialsReceived tutorialsReceived;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Runnable runnable =  new Runnable(){
         @Override
         public void run() {
-            loadData();
+            //loadData();
             if(myAccount != null) {
                 int payments = howManyPayments();               //howManyPayments() updated das payments-Fled (Anzahl der bisherigen Zahlungen), kann also nur einmal sinnvoll verwendet werden.
                 if(payments > 0) {
@@ -57,10 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 pay(payments * myAccount.getWeeklyAmount());         //draw() ist in pay() enthalten!
                 handler.postDelayed(runnable, 10000);
-                saveData();
+                //saveData();
             }
         }
-    };;
+    };
 
     private ConstraintLayout clDeleteDialog;
     private Button buttonCommitDelete;
@@ -131,12 +132,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button100.setVisibility(View.GONE);
         button250.setVisibility(View.GONE);
 
-        loadData();     //Läd Konto
+        if(!loadingCompleted) {
+            loadData();     //Läd Konto
+        }
 
-        if(myAccount == null) {
+        if(AccountV2.getInstance() == null) {
             startActivity(new Intent(this, CreateAmountActivity.class));
             finish();
         } else {
+            myAccount = AccountV2.getInstance();
+
             progressBarRed.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             tvBalance.setVisibility(View.VISIBLE);
@@ -157,8 +162,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void finish(){
-        saveData();
+        //saveData();
         super.finish();
+    }
+
+    public void onStop() {
+        saveData();
+        super.onStop();
     }
 
     @Override
@@ -183,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buttonAcceptMinus:
-                loadData();
+                //loadData();
                 myAccount.setBalance(myAccount.getBalance() + actualMinus);
                 myAccount.addMeatDay(- actualMinus);                        //Abbuchung wird in den Statistiken vermerkt!
                 actualMinus = 0;
@@ -191,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 buttonAccept.setVisibility(View.GONE);
                 tvMinus.setVisibility(View.GONE);
                 tvExplanation.setVisibility(View.VISIBLE);
-                saveData();
+                //saveData();
                 draw();
                 break;
             case R.id.buttonUndo:
@@ -282,8 +292,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 areYouSure = 2;
                 break;
             case 2:
-                myAccount = null;
-                saveData();
+                AccountV2.loadAccount(null);
                 startActivity(new Intent(this, CreateAmountActivity.class));
                 finish();
                 areYouSure = 0;
@@ -369,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public int howManyPayments() {
-        loadData();
+        //loadData();
         Calendar calendar = Calendar.getInstance();
         int currentPayments = myAccount.getPayments();
         long milliDif = calendar.getTimeInMillis() - myAccount.getCreationDateMillis();
@@ -378,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             myAccount.changeCreationHour(correctTimeZone(milliDif));
         }
         myAccount.setPayments((int) (milliDif / 604800000));   //604800000
-        saveData();
+        //saveData();
         return myAccount.getPayments() - currentPayments;
     }
 
@@ -396,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void pay(int amount) {
         myAccount.setBalance(myAccount.getBalance() + amount);
-        saveData();
+        //saveData();
         draw();
     }
 
@@ -524,12 +533,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(myAccount);
+        String json = gson.toJson(AccountV2.getInstance());
         editor.putString("account", json);
         editor.apply();
 
         //Speicher TutorialsReceived:
-        String jsonTut = gson.toJson(tutorialsReceived);
+        String jsonTut = gson.toJson(TutorialsReceived.getInstance());
         editor.putString("tutorialsReceived", jsonTut);
         editor.apply();
 
@@ -540,25 +549,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Gson gson = new Gson();
         String json = sharedPreferences.getString("account", null);
         Type type = new TypeToken<AccountV2>() {}.getType();
-        myAccount = gson.fromJson(json, type);
-        if(myAccount != null && myAccount.getWeeks()[0].getDays().length == 7) {
-            System.out.println("Account ist veraltet!");
+        AccountV2 loadedAccount = gson.fromJson(json, type);
+        if(loadedAccount != null && loadedAccount.getWeeks()[0].getDays().length == 7) {                    //erkennt, dass noch ein alter Account verwendet wird! Behebt Problem!
             type = new TypeToken<Account>() {}.getType();
             Account oldAccount = gson.fromJson(json, type);
-            myAccount = AccountV2.transformAccount(oldAccount);
+            loadedAccount = AccountV2.transformAccount(oldAccount);
         }
+        AccountV2.loadAccount(loadedAccount);
         //myAccount kann null sein, wenn noch nichts gespeichert wurde!
 
         //Lade TutorialsReceived:
         String jsonTut = sharedPreferences.getString("tutorialsReceived", null);
         Type typeTut = new TypeToken<TutorialsReceived>() {}.getType();
-        tutorialsReceived = gson.fromJson(jsonTut, typeTut);
-        if(tutorialsReceived == null) {
-            tutorialsReceived = new TutorialsReceived();
-            if(myAccount != null) {
-                tutorialsReceived.setAllDone();
+        TutorialsReceived loadedTutorialsReceived = gson.fromJson(jsonTut, typeTut);
+        if(loadedTutorialsReceived == null) {
+            loadedTutorialsReceived = new TutorialsReceived();
+            if(loadedAccount != null) {
+                loadedTutorialsReceived.setAllDone();
             }
         }
+        TutorialsReceived.loadTutorialsReceived(loadedTutorialsReceived);
+
+        loadingCompleted = true;
     }
 
 }

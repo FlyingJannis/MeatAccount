@@ -22,6 +22,7 @@ import com.flyingjannis.meataccount.R;
 import com.flyingjannis.meataccount.model.Account;
 import com.flyingjannis.meataccount.model.AccountV2;
 import com.flyingjannis.meataccount.model.RepeatListener;
+import com.flyingjannis.meataccount.model.TutorialsReceived;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -98,9 +99,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             mAdView.loadAd(adRequest);
         }
 
-        loadData();
+        if(!MainActivity.loadingCompleted) {
+            loadData();
+        }
         setTitle(getResources().getString(R.string.statistics));
-        
+
+        myAccount = AccountV2.getInstance();
         myAccount.addMeatDay(0);            //Statistik wird geupdated! (0 wird hinzugefügt)
 
         clFunFact = findViewById(R.id.clFunFact);
@@ -130,7 +134,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 if(myAccount.getWeeklyAmount() >= 20) {
                     myAccount.setWeeklyAmount(myAccount.getWeeklyAmount() - 10);
                     tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
-                    saveData();
+                    //saveData();
                 } else {
                     makeToast(getResources().getString(R.string.vegetarian), Toast.LENGTH_SHORT);
                 }
@@ -145,7 +149,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 if(myAccount.getWeeklyAmount() <= 990) {
                     myAccount.setWeeklyAmount(myAccount.getWeeklyAmount() + 10);
                     tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
-                    saveData();
+                    //saveData();
                 } else {
                     makeToast(getResources().getString(R.string.calm_down), Toast.LENGTH_SHORT);
                 }
@@ -209,6 +213,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
+    public void onStop() {
+        saveData();
+        super.onStop();
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -251,7 +260,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 changeButtons();
                 myAccount.setBalance(myAccount.getBalance() - 100);
                 updateBalance();
-                saveData();
+                //saveData();
                 break;
             case R.id.buttonCancelGiveUp:
                 acceptMode = false;
@@ -277,7 +286,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 updateBalance();
                 return true;
             }
-            saveData();
+            //saveData();
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -439,7 +448,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         for(int i = 1; i < result.length; i++) {
             result[i] = new DataPoint(i, myAccount.getWeeks()[i - 1].getMeatAmount());
         }
-        saveData();
+        //saveData();
         return result;
     }
 
@@ -589,7 +598,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             totalMeat += myAccount.getWeeks()[myAccount.getPayments()].getDays()[n];
             totalDays += 1;
         }
-        saveData();
+        //saveData();
         return ((double) totalMeat) / totalDays;
     }
 
@@ -718,22 +727,63 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void loadData() {
+        /*
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("account", null);
         Type type = new TypeToken<AccountV2>() {}.getType();
         myAccount = gson.fromJson(json, type);
 
+         */
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("account", null);
+        Type type = new TypeToken<AccountV2>() {}.getType();
+        AccountV2 loadedAccount = gson.fromJson(json, type);
+        if(loadedAccount != null && loadedAccount.getWeeks()[0].getDays().length == 7) {                    //erkennt, dass noch ein alter Account verwendet wird! Behebt Problem!
+            type = new TypeToken<Account>() {}.getType();
+            Account oldAccount = gson.fromJson(json, type);
+            loadedAccount = AccountV2.transformAccount(oldAccount);
+        }
+        AccountV2.loadAccount(loadedAccount);
         //myAccount kann null sein, wenn noch nichts gespeichert wurde!
+
+        //Lade TutorialsReceived:
+        String jsonTut = sharedPreferences.getString("tutorialsReceived", null);
+        Type typeTut = new TypeToken<TutorialsReceived>() {}.getType();
+        TutorialsReceived loadedTutorialsReceived = gson.fromJson(jsonTut, typeTut);
+        if(loadedTutorialsReceived == null) {
+            loadedTutorialsReceived = new TutorialsReceived();
+            if(loadedAccount != null) {
+                loadedTutorialsReceived.setAllDone();
+            }
+        }
+        TutorialsReceived.loadTutorialsReceived(loadedTutorialsReceived);
+
+        MainActivity.loadingCompleted = true;
     }
 
     public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
+        String json = gson.toJson(AccountV2.getInstance());
+        editor.putString("account", json);
+        editor.apply();
+
+        //Speicher TutorialsReceived:
+        String jsonTut = gson.toJson(TutorialsReceived.getInstance());
+        editor.putString("tutorialsReceived", jsonTut);
+        editor.apply();
+        /*
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
         String json = gson.toJson(myAccount);
         editor.putString("account", json);
         editor.apply();
+
+         */
     }
 
 }

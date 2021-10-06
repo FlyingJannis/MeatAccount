@@ -73,7 +73,8 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         clWelcome.setVisibility(View.GONE);
 
 
-        loadData();
+        tutorialsReceived = TutorialsReceived.getInstance();
+
         if(tutorialsReceived.isCreateAmountTutorialReceived()) {
             enableButtons(true);
         } else {
@@ -131,7 +132,8 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buttonAccept:
-                saveData();
+                //saveData();
+                AccountV2.loadAccount(new AccountV2(amount));
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
                 break;
@@ -187,6 +189,12 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+    public void onStop() {
+        saveData();
+        super.onStop();
+    }
+
+    /*
     public void loadData() {
         //Läd nur TutorialsReceived:
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
@@ -199,16 +207,35 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+     */
+
     public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(new AccountV2(amount));
+        String json = gson.toJson(AccountV2.getInstance());
         editor.putString("account", json);
         editor.apply();
+
+        //Speicher TutorialsReceived:
+        String jsonTut = gson.toJson(TutorialsReceived.getInstance());
+        editor.putString("tutorialsReceived", jsonTut);
+        editor.apply();
+
+/*
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+
+        AccountV2.loadAccount(new AccountV2(amount));
+
 
         String jsonTut = gson.toJson(tutorialsReceived);
         editor.putString("tutorialsReceived", jsonTut);
         editor.apply();
+
+        MainActivity.loadingCompleted = true;
+
+ */
     }
 }

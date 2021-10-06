@@ -110,5 +110,4 @@ public class Account {      //DateSaver speichert mittlerweile viel unnötigen S
         this.creationDateMillis = creationDateMillis;
     }
 
-
 }

@@ -1,10 +1,20 @@
 package com.flyingjannis.meataccount.model;
 
 public class TutorialsReceived {
-    protected boolean createAmountTutorialReceived = false;
-    protected boolean mainTutorialReceived = false;
-    protected boolean mainTutorialFirstMeatReceived = false;
-    protected boolean settingsTutorialReceived = false;
+    private boolean createAmountTutorialReceived = false;
+    private boolean mainTutorialReceived = false;
+    private boolean mainTutorialFirstMeatReceived = false;
+    private boolean settingsTutorialReceived = false;
+
+    private static TutorialsReceived instance;
+
+    public static TutorialsReceived getInstance() {
+        return instance;
+    }
+
+    public static void loadTutorialsReceived(TutorialsReceived tutorialsReceived) {
+        instance = tutorialsReceived;
+    }
 
     public void resetAllInformation() {
         createAmountTutorialReceived = false;

@@ -163,7 +163,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonCancelGiveUp.setOnClickListener(this);
 
         updateBalance();                                    //Setzt den aktuellen Kontostand
-        tvActualMeetWeek.setText(MainActivity.beautifulWeight(averagePerDay() * 7));
+        tvActualMeetWeek.setText(MainActivity.beautifulWeight((int) (averagePerDay() * 7)));
 
         button3Month.setVisibility(View.GONE);
         buttonYear.setVisibility(View.GONE);
@@ -190,7 +190,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         totalDataAsGraph();                         //Graphview wird initialisiert und zeigt Daten der Wochen an.
 
-        tvAverageDayNumber.setText(MainActivity.beautifulWeight(averagePerDay()));
+        if(averagePerDay() < 100) {
+            DecimalFormat df = new DecimalFormat("0.0");
+            tvAverageDayNumber.setText(df.format(averagePerDay()) + "g");
+        } else {
+            tvAverageDayNumber.setText(MainActivity.beautifulWeight((int) averagePerDay()));
+        }
         tvLastMonthNumber.setText(MainActivity.beautifulWeight(averageWeekLast28Days()));
 
         if(daysSinceLastMeat() >= 0) {                  //Fehlercode ist -1
@@ -316,12 +321,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void updateGraph() {        //Neu: Alle Graphen werden gelöscht und neu gezeichnet!
-        /**
-         *         DataPoint[] average = new DataPoint[myAccount.payments + 1];
-         *         for(int i = 0; i < myAccount.payments + 1; i++) {
-         *             average[i] = new DataPoint(i, myAccount.weeklyAmount);
-         *         }
-         */
         graphView.removeAllSeries();
         totalDataAsGraph();
     }
@@ -510,63 +509,49 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
         return counter;
     }
-    /*
-    public int daysSinceLastMeat() {
-        int counter = 0;
-        boolean foundMeat = false;
-        int i = myAccount.getPayments();
-        while(i >= 0 && !foundMeat) {
-            int j = 6;
-            while(j >= 0 && !foundMeat) {
-                if(myAccount.getWeeks()[i].getDays()[j] > 0) {
-                    foundMeat = true;
-                } else {
-                    counter++;
-                }
-                j--;
-            }
-            i--;
-        }
-        if(!foundMeat) {            //Falls noch gar kein Fleisch konsumiert wurde!
-            return -1;
-        }
-        Calendar calendar = Calendar.getInstance();
-        int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
-        boolean afterPayHour = calendar.get(Calendar.HOUR_OF_DAY) >= myAccount.getCreationDate().getHour();
-        if(dayMeatWeek == 0 && !afterPayHour) {
-            counter = counter + 1;
-        } else {
-            counter = counter - (6 - dayMeatWeek);
-        }
-        return counter;
-    }
-
-     */
 
     /**
      * NACHHER LÖSCHEN!
      * Methode müsste für 8ter Arrays geändert werden!
+     * Version 1 fertig
      */
     public int averageWeekLast28Days() {
         if(myAccount.getPayments() >= 4) {
             Calendar calendar = Calendar.getInstance();
             int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
+            boolean afterPayHour = calendar.get(Calendar.HOUR_OF_DAY) >= myAccount.getCreationDate().getHour();
             int totalMeat28 = myAccount.getWeeks()[myAccount.getPayments() - 1].getMeatAmount() +             //Die drei letzten abgeschlossenen Wochen.
                     myAccount.getWeeks()[myAccount.getPayments() - 2].getMeatAmount() +
                     myAccount.getWeeks()[myAccount.getPayments() - 3].getMeatAmount();
 
-            int[] tmpDayStamps = myAccount.getWeeks()[myAccount.getPayments() - 4].getDays();
-            for(int i = 6; i >= dayMeatWeek; i--) {                                     //Holt sich alle nötigen Tage vor den 3 Wochen
-                totalMeat28 += tmpDayStamps[i];
+            if(dayMeatWeek == 0) {
+                if(afterPayHour) {
+                    totalMeat28 += myAccount.getWeeks()[myAccount.getPayments() - 4].getMeatAmount();
+                    if(myAccount.getPayments() > 4) {
+                        totalMeat28 += myAccount.getWeeks()[myAccount.getPayments() - 5].getDays()[7];          //Der Rest von der Vorgängerwoche, falls diese existiert
+                    }
+                } else {
+                    int[] tmpDayStamps = myAccount.getWeeks()[myAccount.getPayments()].getDays();
+                    for(int i = 0; i < 7; i++) {                                                                //Der aktuelle
+                        totalMeat28 += tmpDayStamps[i];
+                    }
+                    totalMeat28 += myAccount.getWeeks()[myAccount.getPayments() - 4].getDays()[7];
+                }
+            } else {
+                int[] tmpDayStamps = myAccount.getWeeks()[myAccount.getPayments() - 4].getDays();
+                for(int i = 7; i >= dayMeatWeek; i--) {                                     //Holt sich alle nötigen Tage vor den 3 Wochen
+                    totalMeat28 += tmpDayStamps[i];
+                }
+
+                tmpDayStamps = myAccount.getWeeks()[myAccount.getPayments()].getDays();               //Updated Variable!
+                for(int i = 0; i < dayMeatWeek; i++) {                                      //Holt sich alle nötigen Tage nach den drei Wochen.
+                    totalMeat28 += tmpDayStamps[i];
+                }
             }
 
-            tmpDayStamps = myAccount.getWeeks()[myAccount.getPayments()].getDays();               //Updated Variable!
-            for(int i = 0; i < dayMeatWeek; i++) {                                      //Holt sich alle nötigen Tage nach den drei Wochen.
-                totalMeat28 += tmpDayStamps[i];
-            }
             return totalMeat28 / 4;
         } else {
-            return averagePerDay() * 7;                                                 //Falls noch keine 28 Tage vergangen sind ist der Wochendurchschnitt der
+            return (int) (averagePerDay() * 7);                                                 //Falls noch keine 28 Tage vergangen sind ist der Wochendurchschnitt der
         }                                                                               //letzten 28 Tage = dem totalen Wochendurchschnitt.
     }
 
@@ -585,9 +570,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     /**
      * NACHHER LÖSCHEN!
      * Methode müsste für 8ter Arrays geändert werden!
-     * (Zeile 565ff)
      */
-    public int averagePerDay() {
+    public double averagePerDay() {
         int totalDays = 0;
         int totalMeat = 0;
         for(int i = 0; i < myAccount.getPayments(); i++) {
@@ -599,15 +583,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         if(myAccount.getCreationDate().getDayOfWeek() == calendar.get(Calendar.DAY_OF_WEEK) &&        //Falls der Paymenttag schon angebrochen, aber es noch kein Payment gab!
                 myAccount.getCreationDate().getHour() > calendar.get(Calendar.HOUR_OF_DAY)) {
-            dayOfWeek = 6;
-            totalDays += 1;
+            dayOfWeek = 7;
         }
         for(int n = 0; n <= dayOfWeek; n++) {                       //Hier wird nurnoch die angebrochene Woche betrachtet!
             totalMeat += myAccount.getWeeks()[myAccount.getPayments()].getDays()[n];
             totalDays += 1;
         }
         saveData();
-        return totalMeat / totalDays;
+        return ((double) totalMeat) / totalDays;
     }
 
     public void loadFact() {

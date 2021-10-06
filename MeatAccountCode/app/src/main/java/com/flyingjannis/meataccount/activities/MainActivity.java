@@ -25,6 +25,7 @@ import com.flyingjannis.meataccount.broadcasts.NewMeatBroadcastEN;
 import com.flyingjannis.meataccount.broadcasts.ReminderBroadcastDE;
 import com.flyingjannis.meataccount.broadcasts.ReminderBroadcastEN;
 import com.flyingjannis.meataccount.model.Account;
+import com.flyingjannis.meataccount.model.AccountV2;
 import com.flyingjannis.meataccount.model.TutorialsReceived;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -35,7 +36,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static long REMINDER_TIME = 172800000;          //3 Tage: 259200000, 2 Tage: 172800000
 
-    private Account myAccount;
+    private AccountV2 myAccount;
     private TutorialsReceived tutorialsReceived;
 
     private int actualMinus = 0;
@@ -538,8 +539,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("account", null);
-        Type type = new TypeToken<Account>() {}.getType();
-        myAccount = gson.fromJson(json, type);
+        Type type = new TypeToken<AccountV2>() {}.getType();
+        try {
+            myAccount = gson.fromJson(json, type);
+        } catch (Exception e) {
+            type = new TypeToken<Account>() {}.getType();
+            Account oldAccount = gson.fromJson(json, type);
+            myAccount = AccountV2.transformAccount(oldAccount);
+        }
+
         //myAccount kann null sein, wenn noch nichts gespeichert wurde!
 
         //Lade TutorialsReceived:

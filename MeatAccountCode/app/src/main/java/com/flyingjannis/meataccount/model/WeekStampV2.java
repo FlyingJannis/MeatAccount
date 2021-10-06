@@ -20,6 +20,14 @@ public class WeekStampV2 {
         return result;
     }
 
+    public static WeekStampV2 transformWeekStamp(WeekStamp oldStamp) {
+        WeekStampV2 newStamp = new WeekStampV2(oldStamp.getWeekNumber());
+        for(int i = 0; i < 7; i++) {
+            newStamp.setDay(i, oldStamp.getDays()[i]);
+        }
+        return newStamp;
+    }
+
     public int[] getDays() {
         return days;
     }

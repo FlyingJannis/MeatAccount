@@ -72,6 +72,21 @@ public class AccountV2 {
         weeks[payments].setDay(dayOfWeek, amount);
     }
 
+    public static AccountV2 transformAccount(Account oldAccount) {
+        AccountV2 newAccount = new AccountV2(oldAccount.getWeeklyAmount());
+        newAccount.setBalance(oldAccount.getBalance());
+        newAccount.setPayments(oldAccount.getPayments());
+        newAccount.setCreationDate(oldAccount.getCreationDate());
+        newAccount.setCreationDateMillis(oldAccount.getCreationDateMillis());
+
+        WeekStampV2[] newStamps = new WeekStampV2[oldAccount.getPayments() + 1];
+        for(int i = 0; i <= oldAccount.getPayments(); i++) {
+            newStamps[i] = WeekStampV2.transformWeekStamp(oldAccount.getWeeks()[i]);
+        }
+        newAccount.setWeeks(newStamps);
+        return newAccount;
+    }
+
     public int getBalance() {
         return balance;
     }
@@ -108,6 +123,9 @@ public class AccountV2 {
         return creationDate;
     }
 
+    public void setCreationDate(DateSaver creationDate) {
+        this.creationDate = creationDate;
+    }
 
     public long getCreationDateMillis() {
         return creationDateMillis;

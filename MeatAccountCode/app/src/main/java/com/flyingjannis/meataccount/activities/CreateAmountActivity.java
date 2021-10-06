@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.flyingjannis.meataccount.R;
 import com.flyingjannis.meataccount.model.Account;
+import com.flyingjannis.meataccount.model.AccountV2;
 import com.flyingjannis.meataccount.model.TutorialsReceived;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -202,7 +203,7 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(new Account(amount));
+        String json = gson.toJson(new AccountV2(amount));
         editor.putString("account", json);
         editor.apply();
 

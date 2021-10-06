@@ -20,6 +20,10 @@ public class WeekStamp {
         return result;
     }
 
+    public int getWeekNumber() {
+        return weekNumber;
+    }
+
     public int[] getDays() {
         return days;
     }

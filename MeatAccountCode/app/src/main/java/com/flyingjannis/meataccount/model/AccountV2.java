@@ -89,6 +89,10 @@ public class AccountV2 {
         return newAccount;
     }
 
+    public static String dataToString(AccountV2 account) {
+        return null;
+    }
+
     public static AccountV2 getInstance() {
         return instance;
     }

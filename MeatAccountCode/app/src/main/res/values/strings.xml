@@ -61,6 +61,9 @@
         from your meat account.\n\nIt\'s easy!</string>
     <string name="welcome4">In your statistics you can see live what impact your renunciation has on the environment!</string>
     <string name="welcome5">Alright?\nThen let\'s go!</string>
+    <string name="load">load</string>
+    <string name="code_load_hint">Load existing account with code</string>
+    <string name="invalid_code">Invalid code. Please try another code.</string>
 
 
     <string name="app_id">ca-app-pub-8498756977378374~3852068180</string>

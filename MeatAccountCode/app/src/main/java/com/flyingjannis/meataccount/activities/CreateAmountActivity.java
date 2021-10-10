@@ -11,9 +11,11 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flyingjannis.meataccount.R;
 import com.flyingjannis.meataccount.model.Account;
@@ -28,6 +30,7 @@ import java.util.Objects;
 public class CreateAmountActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TutorialsReceived tutorialsReceived;
+    private Toast actualToast;
 
     private TextView tvAmount;
     private SeekBar sbAmount;
@@ -41,6 +44,8 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
     private ImageView ivInfo;
     private ImageView ivSteak2;
     private ImageView ivBigFingerTap;
+    private EditText etLoadCode;
+    private Button buttonLoadCode;
 
     private ConstraintLayout clWelcome;
     private int welcomeText = 1;
@@ -68,6 +73,8 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         ivInfo = findViewById(R.id.ivInfo);
         ivSteak2 = findViewById(R.id.ivSteak2);
         ivBigFingerTap = findViewById(R.id.ivBigFingerTap);
+        etLoadCode = findViewById(R.id.etLoadCode);
+        buttonLoadCode = findViewById(R.id.buttonLoadCode);
 
         clWelcome.setZ(10);
         clWelcome.setVisibility(View.GONE);
@@ -124,8 +131,14 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         });
 
         buttonAccept.setOnClickListener(this);
+        buttonLoadCode.setOnClickListener(this);
     }
 
+    @Override
+    public void onStop() {
+        saveData();
+        super.onStop();
+    }
 
 
     @Override
@@ -137,6 +150,26 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
                 break;
+            case R.id.buttonLoadCode:
+                //TODO
+                AccountV2 account = AccountV2.encodeAccount(etLoadCode.getText().toString());
+                System.out.println("Payments:" + account.getPayments());
+                AccountV2.loadAccount(AccountV2.encodeAccount(etLoadCode.getText().toString()));
+
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+                /*
+                try {
+                    AccountV2.loadAccount(AccountV2.encodeAccount(etLoadCode.getText().toString()));
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                } catch (Exception e) {
+                    makeToast(getResources().getString(R.string.invalid_code), Toast.LENGTH_LONG);
+                }
+
+                 */
+
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + view.getId());
         }
@@ -145,6 +178,15 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
     private void enableButtons(boolean enabled) {
         buttonAccept.setEnabled(enabled);
         sbAmount.setEnabled(enabled);
+    }
+
+    private void makeToast(String text, int length) {
+        if(actualToast != null) {
+            actualToast.cancel();
+        }
+        actualToast = Toast.makeText(CreateAmountActivity.this, text,
+                length);
+        actualToast.show();
     }
 
     private void nextMessage() {
@@ -189,10 +231,7 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    public void onStop() {
-        saveData();
-        super.onStop();
-    }
+
 
     /*
     public void loadData() {

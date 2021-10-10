@@ -63,6 +63,9 @@
     <string name="welcome4">In deinen Statistiken kannst du live mitverfolgen, welchen Einfluss dein Verzicht
         auf die Umwelt hat!</string>
     <string name="welcome5">Alles klar?\nDann los geht\'s!</string>
+    <string name="load">laden</string>
+    <string name="code_load_hint">Existierenden Account laden mit Code</string>
+    <string name="invalid_code">Code ungültig. Versuche bitte einen anderen Code.</string>
 
 
 

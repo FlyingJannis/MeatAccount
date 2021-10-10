@@ -31,6 +31,7 @@ public class ExampleAccounts {
         return account;
     }
 
+
     public static AccountV2 getRandomAccountV2(int weeks, int amount) {
         AccountV2 account = new AccountV2(amount);
         Calendar calender = Calendar.getInstance();

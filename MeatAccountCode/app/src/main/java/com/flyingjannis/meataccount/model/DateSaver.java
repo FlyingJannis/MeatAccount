@@ -13,6 +13,34 @@ public class DateSaver {
         this.hour = hour;
     }
 
+    /**
+     * Aufbau des Strings: XXXX - YearWeekDayHour
+     * @param date
+     * @return
+     */
+    public static String getStringCode(DateSaver date) {
+        String result = "";
+        result += (char) date.getYear();
+        result += (char) date.getWeekOfYear();
+        result += (char) date.getDayOfWeek();
+        result += (char) date.getHour();
+        return result;
+    }
+
+    public static DateSaver encodeStringCode(String code) {
+        char[] chars = code.toCharArray();
+        return new DateSaver(chars[0], chars[1], chars[2], chars[3]);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        DateSaver otherDate = (DateSaver) other;
+        return year == otherDate.getYear()
+                && weekOfYear == otherDate.getWeekOfYear()
+                && dayOfWeek == otherDate.getDayOfWeek()
+                && hour == otherDate.getHour();
+    }
+
     public int getYear() {
         return year;
     }

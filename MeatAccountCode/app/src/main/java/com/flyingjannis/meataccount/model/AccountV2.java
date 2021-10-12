@@ -154,7 +154,8 @@ public class AccountV2 {
     public static long stringToLong(String str) {
         boolean[] numberBinary = new boolean[8 * 8];
         char[] chars = str.toCharArray();
-
+        System.out.println("String:" + str);
+        System.out.println((int) chars[3]);
         for(int i = 0; i < 4; i++) {
             int num = chars[i];
             for(int j = 15; j >= 0; j--) {

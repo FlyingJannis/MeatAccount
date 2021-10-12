@@ -23,7 +23,7 @@ public class ExampleUnitTest {
 
     @Before
     public void createObjects() {
-        testAccount = ExampleAccounts.getRandomAccountV2(83, 300);
+        testAccount = ExampleAccounts.getRandomAccountV2(50, 300);
         testActivity = new SettingsActivity();
     }
 
@@ -32,6 +32,7 @@ public class ExampleUnitTest {
     @Test
     public void AccountCoderTest() {
         System.out.println(AccountV2.dataToString(testAccount));
+        System.out.println(AccountV2.dataToString(testAccount).length());
         int[] ints = {1, 5, 8, 10, 37, 29, 291};
         int[] ints2 = Arrays.copyOfRange(ints, 3, 6);
         System.out.println(Arrays.toString(ints2));
@@ -48,7 +49,7 @@ public class ExampleUnitTest {
 
     @Test
     public void longCoderTest() {
-        long test = 9137281758239318952L;
+        long test = 1633957835071L;
         String str = AccountV2.longToString(test);
         assertTrue(str.length() == 4);
         System.out.println(str);

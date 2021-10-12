@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //loadData();
             if(myAccount != null) {
                 int payments = howManyPayments();               //howManyPayments() updated das payments-Fled (Anzahl der bisherigen Zahlungen), kann also nur einmal sinnvoll verwendet werden.
+                System.out.println("PAYMENTSO:" + payments + " BALANCE:" + myAccount.getBalance() + " Payments:" + myAccount.getPayments());
                 if(payments > 0) {
                     makeToast(getResources().getString(R.string.amount_recieved) + " " +
                         beautifulWeight(payments * myAccount.getWeeklyAmount()) + " " +
@@ -382,6 +383,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Calendar calendar = Calendar.getInstance();
         int currentPayments = myAccount.getPayments();
         long milliDif = calendar.getTimeInMillis() - myAccount.getCreationDateMillis();
+        System.out.println("MILLIS:" + myAccount.getCreationDateMillis() + "DIESA:" + calendar.getTimeInMillis());
 
         if(correctTimeZone(milliDif) == -1 || correctTimeZone(milliDif) == 1) {         //Sehr umständlich um sich an Sommer und Winterzeit anzupassen!
             myAccount.changeCreationHour(correctTimeZone(milliDif));

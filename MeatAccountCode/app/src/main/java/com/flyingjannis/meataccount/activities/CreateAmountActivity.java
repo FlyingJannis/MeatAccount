@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.Objects;
 
 public class CreateAmountActivity extends AppCompatActivity implements View.OnClickListener {
@@ -79,8 +80,6 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
 
         clWelcome.setZ(10);
         clWelcome.setVisibility(View.GONE);
-
-        etLoadCode.setText(AccountV2.dataToString(ExampleAccounts.getRandomAccountV2(50, 300)));
 
 
         tutorialsReceived = TutorialsReceived.getInstance();
@@ -154,25 +153,19 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
                 finish();
                 break;
             case R.id.buttonLoadCode:
-                //TODO
-                System.out.println("LÄNGE: " + etLoadCode.getText().toString().length());
-                AccountV2 account = AccountV2.encodeAccount(etLoadCode.getText().toString());
-                System.out.println("MILLOS:" + account.getCreationDateMillis());
-                System.out.println("Balance:" + account.getBalance());
-                AccountV2.loadAccount(account);
-
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-                /*
                 try {
-                    AccountV2.loadAccount(AccountV2.encodeAccount(etLoadCode.getText().toString()));
+                    AccountV2 account = AccountV2.encodeAccount(etLoadCode.getText().toString());
+                    Calendar calendar = Calendar.getInstance();
+                    if(account.getCreationDateMillis() > calendar.getTimeInMillis()) {
+                        throw new RuntimeException("Error: Creation Date Millis too big!");
+                    }
+                    AccountV2.loadAccount(account);
+
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
                 } catch (Exception e) {
                     makeToast(getResources().getString(R.string.invalid_code), Toast.LENGTH_LONG);
                 }
-
-                 */
 
                 break;
             default:

@@ -66,6 +66,10 @@
     <string name="load">laden</string>
     <string name="code_load_hint">Existierenden Account laden mit Code</string>
     <string name="invalid_code">Code ungültig. Versuche bitte einen anderen Code.</string>
+    <string name="generated_code_message">Es wurde ein Code aus deinem aktuellen MeatAccount generiert.
+        Füge ihn bei der Erstellung eines neuen Kontos ein, um dein aktuelles Konto zu übertragen:</string>
+    <string name="copy_code">Code kopieren</string>
+    <string name="code_copied">Code wurde in deine Zwischenablage kopiert.</string>
 
 
 

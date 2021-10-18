@@ -281,7 +281,7 @@
                 android:text="@string/delete_message"
                 android:textAlignment="center"
                 android:textColor="@color/dark"
-                android:textSize="20dp"
+                android:textSize="14dp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -300,6 +300,7 @@
                     android:backgroundTint="@color/darker_red"
                     android:text="@string/delete_account"
                     android:textAllCaps="true"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
 
                 <Button
@@ -312,6 +313,7 @@
                     android:layout_weight="1"
                     android:backgroundTint="@color/grey"
                     android:text="@string/cancel"
+                    android:textSize="14dp"
                     android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>

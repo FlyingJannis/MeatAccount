@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,12 +75,18 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private TextView tvActualMeetWeek;
     private TextView tvLastMeat;
     private ImageView ivFingerTap;
+    private Button buttonGetCode;
+    private ScrollView svStats;
+    private ConstraintLayout clCodeDialog;
+    private Button buttonCopyCode;
+    private TextView tvGeneratedCode;
 
     private boolean statsAvailable = false;
     private int graphState = 2; //0 = 3 Monate, 1 = Jahr, 2 = Total
     private int factSwitch = 0;
     private boolean acceptMode = false;
     private Toast actualToast;
+    private String accountCode;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -107,6 +117,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         myAccount = AccountV2.getInstance();
         myAccount.addMeatDay(0);            //Statistik wird geupdated! (0 wird hinzugefügt)
 
+        svStats = findViewById(R.id.svStats);
         clFunFact = findViewById(R.id.clFunFact);
         llMakeSureButtons = findViewById(R.id.llMakeSureButtons);
         graphView = findViewById(R.id.graphView);
@@ -127,6 +138,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         button100Less = findViewById(R.id.button100Less);
         tvLastMeat = findViewById(R.id.tvLastMeat);
         ivFingerTap = findViewById(R.id.ivFingerTap);
+        buttonGetCode = findViewById(R.id.buttonGetCode);
+        clCodeDialog = findViewById(R.id.clCodeDialog);
+        buttonCopyCode = findViewById(R.id.buttonCopyCode);
+        tvGeneratedCode = findViewById(R.id.tvGeneratedCode);
+
+        clCodeDialog.setVisibility(View.GONE);
 
         buttonAmountDown.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
             @Override
@@ -165,6 +182,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         button100Less.setOnClickListener(this);
         buttonAcceptGiveUp.setOnClickListener(this);
         buttonCancelGiveUp.setOnClickListener(this);
+        buttonGetCode.setOnClickListener(this);
+        buttonCopyCode.setOnClickListener(this);
 
         updateBalance();                                    //Setzt den aktuellen Kontostand
         tvActualMeetWeek.setText(MainActivity.beautifulWeight((int) (averagePerDay() * 7)));
@@ -219,6 +238,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -270,6 +290,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.clFunFact:
                 loadFact();
                 break;
+            case R.id.buttonGetCode:
+                clCodeDialog.setVisibility(View.VISIBLE);
+                enableUnits(false);
+                accountCode = AccountV2.dataToString(myAccount);
+                tvGeneratedCode.setText(accountCode);
+                break;
+            case R.id.buttonCopyCode:
+                clCodeDialog.setVisibility(View.GONE);
+                enableUnits(true);
+                ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("code", accountCode);
+                clipboard.setPrimaryClip(clip);
+                makeToast(getResources().getString(R.string.code_copied), Toast.LENGTH_LONG);
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + view.getId());
         }
@@ -280,7 +314,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent keyEvent) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
-            if(acceptMode) {
+            if(clCodeDialog.getVisibility() == View.VISIBLE) {
+                clCodeDialog.setVisibility(View.GONE);
+                enableUnits(true);
+                return true;
+            } else if(acceptMode) {
                 acceptMode = false;
                 changeButtons();
                 updateBalance();
@@ -292,6 +330,22 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             startActivity(intent);
         }
         return super.onKeyDown(keyCode, keyEvent);
+    }
+
+    private void enableUnits(boolean enabled) {
+        clFunFact.setEnabled(enabled);
+        button3Month.setEnabled(enabled);
+        buttonYear.setEnabled(enabled);
+        buttonTotal.setEnabled(enabled);
+        button100Less.setEnabled(enabled);
+        buttonAcceptGiveUp.setEnabled(enabled);
+        buttonCancelGiveUp.setEnabled(enabled);
+        buttonGetCode.setEnabled(enabled);
+        buttonAmountDown.setEnabled(enabled);
+        buttonAmountUp.setEnabled(enabled);
+
+        svStats.setEnabled(enabled);
+
     }
 
     private void makeToast(String text, int length) {

@@ -79,7 +79,7 @@
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
         android:text="@string/accept"
-        android:textAllCaps="false"
+        android:textAllCaps="true"
         android:textSize="24dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -245,7 +245,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             android:text="@string/load"
-            android:textAllCaps="false"
+            android:textAllCaps="true"
             android:textSize="20dp"
             android:textStyle="bold" />
     </LinearLayout>

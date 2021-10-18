@@ -64,6 +64,10 @@
     <string name="load">load</string>
     <string name="code_load_hint">Load existing account with code</string>
     <string name="invalid_code">Invalid code. Please try another code.</string>
+    <string name="generated_code_message">A code has been generated from your current MeatAccount.
+        Paste it when creating a new account to transfer your current account:</string>
+    <string name="copy_code">copy code</string>
+    <string name="code_copied">Code was copied to your clipboard.</string>
 
 
     <string name="app_id">ca-app-pub-8498756977378374~3852068180</string>

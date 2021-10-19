@@ -88,6 +88,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private Toast actualToast;
     private String accountCode;
 
+    //TODO: Record ggf. aktualisieren und anzeigen!
+    //TODO: Monats Facts!
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -536,15 +538,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
      * Methode müsste bei 8ter Arrays geändert werden!
      * Version 1 fertig
      */
-    public int daysSinceLastMeat() {
+    public static int daysSinceLastMeat() {
+        AccountV2 account = AccountV2.getInstance();
         int counter = 0;
         boolean foundMeat = false;
         boolean foundMeatAt8thPlace = false;
-        int i = myAccount.getPayments();
+        int i = account.getPayments();
         while(i >= 0 && !foundMeat) {
             int j = 7;
             while(j >= 0 && !foundMeat) {
-                if(myAccount.getWeeks()[i].getDays()[j] > 0) {
+                if(account.getWeeks()[i].getDays()[j] > 0) {
                     foundMeat = true;
                     foundMeatAt8thPlace = (j == 7);
                 } else {
@@ -563,8 +566,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             counter = counter - 1;
         }
         Calendar calendar = Calendar.getInstance();
-        int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
-        boolean afterPayHour = calendar.get(Calendar.HOUR_OF_DAY) >= myAccount.getCreationDate().getHour();
+        int dayMeatWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - account.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
+        boolean afterPayHour = calendar.get(Calendar.HOUR_OF_DAY) >= account.getCreationDate().getHour();
         if(dayMeatWeek == 0 && !afterPayHour) {
             counter = counter + 1;
         } else {

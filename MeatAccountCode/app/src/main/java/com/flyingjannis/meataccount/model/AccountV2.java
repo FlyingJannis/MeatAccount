@@ -16,7 +16,9 @@ public class AccountV2 {
     private int weeklyAmount;
     private int payments;
     private WeekStampV2[] weeks = new WeekStampV2[1];
+    private int daysWithoutMeatRecord;
 
+    private int weekOfLastTransfer;
 
     private DateSaver creationDate;
     private long creationDateMillis;
@@ -29,7 +31,9 @@ public class AccountV2 {
         long seconds = calendar.get(Calendar.SECOND);
         long millisToFullHour = minutes * 60000 + seconds * 1000;
 
+        daysWithoutMeatRecord = 0;
         payments = 0;
+        weekOfLastTransfer = 0;
         weeks[payments] = new WeekStampV2(payments);
         creationDateMillis = calendar.getTimeInMillis() - millisToFullHour;
         creationDate = new DateSaver(calendar.get(Calendar.YEAR), calendar.get(Calendar.WEEK_OF_YEAR),
@@ -85,10 +89,30 @@ public class AccountV2 {
         newAccount.setCreationDateMillis(oldAccount.getCreationDateMillis());
 
         WeekStampV2[] newStamps = new WeekStampV2[oldAccount.getPayments() + 1];
+        WeekStamp[] oldStamps = oldAccount.getWeeks();
         for(int i = 0; i <= oldAccount.getPayments(); i++) {
-            newStamps[i] = WeekStampV2.transformWeekStamp(oldAccount.getWeeks()[i]);
+            newStamps[i] = WeekStampV2.transformWeekStamp(oldStamps[i]);
         }
         newAccount.setWeeks(newStamps);
+
+        int countDaysNoMeat = 0;
+        int recordNoMeat = 0;
+
+        for(int i = 0; i < oldStamps.length; i++) {
+            int[] days = oldStamps[i].getDays();
+            for(int j = 0; j < 7; j++) {
+                if(days[j] == 0) {
+                    countDaysNoMeat++;
+                } else {
+                    if(recordNoMeat < countDaysNoMeat) {
+                        recordNoMeat = countDaysNoMeat;
+                    }
+                    countDaysNoMeat = 0;
+                }
+            }
+        }
+        newAccount.setDaysWithoutMeatRecord(recordNoMeat);
+
         return newAccount;
     }
 
@@ -103,29 +127,39 @@ public class AccountV2 {
     }
 
     /**
-     * Aufbau: Balance(0) WeeklyAmount(1) Payments(2) CreationDate(3-6) CreationDateMillis(7-10) WeekStamps(11-?)
+     * Aufbau: Balance(0) WeeklyAmount(1) Payments(2) CreationDate(3-6) CreationDateMillis(7-10) RecordNoMeat(11) WeekLastTransfer(12) WeekStamps(13-?)
      * @param account
      * @return
      */
     public static String dataToString(AccountV2 account) {
         String result = "";
-        result += (char) account.getBalance();
+        result += (char) (account.getBalance() / 10);                       //Balance ist immer durch 10 teilbar! Kann also verkleinert werden zur Übertragung!
         result += (char) account.getWeeklyAmount();
         result += (char) account.getPayments();
-        result += DateSaver.getStringCode(account.getCreationDate())
-                + longToString(account.getCreationDateMillis())
-                + accountWeeksToString(account);
+        result += DateSaver.getStringCode(account.getCreationDate());
+        result += longToString(account.getCreationDateMillis());
+        result += (char) account.getDaysWithoutMeatRecord();
+        result += (char) account.getPayments();                             //Speichert die Woche, in der der Daten Transfer getätigt wurde
+        result += accountWeeksToString(account);
+
         return result;
     }
 
     public static AccountV2 encodeAccount(String str) {
         char[] chars = str.toCharArray();
         AccountV2 account = new AccountV2(chars[1]);
-        account.setBalance(chars[0]);
+
+        if(chars[0] >= 32768) {                                             //In diesem Fall war die ursprüngliche Zahl negativ!
+            account.setBalance((chars[0] - 65536) * 10);
+        } else {
+            account.setBalance(chars[0] * 10);
+        }
         account.setPayments(chars[2]);
         account.setCreationDate(DateSaver.encodeStringCode(new String(Arrays.copyOfRange(chars, 3, 7))));
         account.setCreationDateMillis(stringToLong(new String(Arrays.copyOfRange(chars, 7, 11))));
-        account.setWeeks(stringToWeekStamp(new String(Arrays.copyOfRange(chars, 11, chars.length))));
+        account.setDaysWithoutMeatRecord(chars[11]);
+        account.setWeekOfLastTransfer(chars[12]);
+        account.setWeeks(stringToWeekStamp(new String(Arrays.copyOfRange(chars, 13, chars.length))));
         return account;
     }
 
@@ -263,5 +297,21 @@ public class AccountV2 {
 
     public void setCreationDateMillis(long creationDateMillis) {
         this.creationDateMillis = creationDateMillis;
+    }
+
+    public int getDaysWithoutMeatRecord() {
+        return daysWithoutMeatRecord;
+    }
+
+    public void setDaysWithoutMeatRecord(int daysWithoutMeatRecord) {
+        this.daysWithoutMeatRecord = daysWithoutMeatRecord;
+    }
+
+    public int getWeekOfLastTransfer() {
+        return weekOfLastTransfer;
+    }
+
+    public void setWeekOfLastTransfer(int weekOfLastTransfer) {
+        this.weekOfLastTransfer = weekOfLastTransfer;
     }
 }

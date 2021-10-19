@@ -51,13 +51,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //loadData();
             if(myAccount != null) {
                 int payments = howManyPayments();               //howManyPayments() updated das payments-Fled (Anzahl der bisherigen Zahlungen), kann also nur einmal sinnvoll verwendet werden.
-                System.out.println("PAYMENTSO:" + payments + " BALANCE:" + myAccount.getBalance() + " Payments:" + myAccount.getPayments());
                 if(payments > 0) {
                     makeToast(getResources().getString(R.string.amount_recieved) + " " +
                         beautifulWeight(payments * myAccount.getWeeklyAmount()) + " " +
                         getResources().getString(R.string.amount_recieved_end), Toast.LENGTH_LONG);
                 }
                 pay(payments * myAccount.getWeeklyAmount());         //draw() ist in pay() enthalten!
+
                 handler.postDelayed(runnable, 10000);
                 //saveData();
             }
@@ -195,6 +195,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.buttonAcceptMinus:
                 //loadData();
+                if(SettingsActivity.daysSinceLastMeat() - 1 > myAccount.getDaysWithoutMeatRecord()) {                   //neuer Rekord wird festgehalten!
+                    myAccount.setDaysWithoutMeatRecord(SettingsActivity.daysSinceLastMeat() - 1);
+                }
                 myAccount.setBalance(myAccount.getBalance() + actualMinus);
                 myAccount.addMeatDay(- actualMinus);                        //Abbuchung wird in den Statistiken vermerkt!
                 actualMinus = 0;

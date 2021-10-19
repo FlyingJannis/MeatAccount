@@ -525,7 +525,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="right"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginRight="24dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/copy_symbol" />
 
@@ -548,7 +548,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/faded"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -570,16 +570,16 @@
                 android:id="@+id/tvCodeMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp"
                 android:layout_marginBottom="15dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:text="@string/generated_code_message"
                 android:textAlignment="center"
                 android:textColor="@color/dark"
-                android:textSize="14dp"
+                android:textSize="16dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -594,7 +594,7 @@
                 android:paddingRight="5dp"
                 android:text="XXX"
                 android:textAlignment="center"
-                android:textColor="@color/dark"
+                android:textColor="@color/dark_background"
                 android:textSize="14dp"
                 android:textStyle="bold" />
 

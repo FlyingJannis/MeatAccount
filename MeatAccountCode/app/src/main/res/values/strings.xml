@@ -28,6 +28,7 @@
     <string name="total">total</string>
     <string name="last_year">1 year</string>
     <string name="since_first_week">Since your first week you have eaten\n</string>
+    <string name="in_last_28_days">In the last 28 days you have eaten\n</string>
     <string name="kilos">kilos</string>
     <string name="kilos_less">\nless meat than the average European!</string>
     <string name="thats">This corresponds to\n</string>
@@ -69,6 +70,7 @@
     <string name="copy_code">copy code</string>
     <string name="code_copied">Code was copied to your clipboard.</string>
     <string name="record_no_meat">Your Meatless-Record\n(in whole days):</string>
+    <string name="last_28">last 28 days</string>
 
 
     <string name="app_id">ca-app-pub-8498756977378374~3852068180</string>

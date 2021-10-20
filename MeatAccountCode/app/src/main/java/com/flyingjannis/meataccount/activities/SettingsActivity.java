@@ -10,15 +10,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,16 +86,25 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private TextView tvGeneratedCode;
     private TextView tvRecordNoMeatNumber;
     private ConstraintLayout clMeatLastMonth;
+    private Switch switchFacts28;
 
     private boolean statsAvailable = false;
+    private boolean factsJustLast28 = false;
     private int graphState = 2; //0 = 3 Monate, 1 = Jahr, 2 = Total
     private int factSwitch = 0;
     private boolean acceptMode = false;
     private Toast actualToast;
     private String accountCode;
 
-    //TODO: Record ggf. aktualisieren und anzeigen!
-    //TODO: Monats Facts!
+    private Handler handler = new Handler();
+    private Runnable runnable =  new Runnable(){
+        @Override
+        public void run() {
+            loadStats();
+            handler.postDelayed(runnable, 3600000);
+        }
+    };
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -150,6 +161,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         tvGeneratedCode = findViewById(R.id.tvGeneratedCode);
         tvRecordNoMeatNumber = findViewById(R.id.tvRecordNoMeatNumber);
         clMeatLastMonth = findViewById(R.id.clMeatLastMonth);
+        switchFacts28 = findViewById(R.id.switchFacts28);
 
         clCodeDialog.setVisibility(GONE);
 
@@ -192,7 +204,22 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonCancelGiveUp.setOnClickListener(this);
         buttonGetCode.setOnClickListener(this);
         buttonCopyCode.setOnClickListener(this);
+        switchFacts28.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                factsJustLast28 = b;
+                factSwitch = 0;
+                loadFact();
+            }
+        });
 
+        runnable.run();
+
+        loadFact();                                 //hier wurde entfernt, dass Facts erst nach einer Woche geladen werden.
+
+    }
+
+    public void loadStats() {
         updateBalance();                                    //Setzt den aktuellen Kontostand
         double averagePerDay = averagePerDay();
         tvActualMeetWeek.setText(MainActivity.beautifulWeight((int) (averagePerDay * 7)));
@@ -234,6 +261,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             tvLastMonthNumber.setText(MainActivity.beautifulWeight(averageWeekLast28Days));
         } else {
             clMeatLastMonth.setVisibility(GONE);
+            switchFacts28.setVisibility(GONE);
         }
 
 
@@ -249,9 +277,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         tvRecordNoMeatNumber.setText("" + MainActivity.beautifulNumber(myAccount.getDaysWithoutMeatRecord()));
         tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
-
-        loadFact();                                 //hier wurde entfernt, dass Facts erst nach einer Woche geladen werden.
-
     }
 
     public void onStop() {
@@ -681,21 +706,30 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     public void loadFact() {
         Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
-        if(calendar.get(Calendar.HOUR_OF_DAY) < myAccount.getCreationDate().getHour()) {
-            dayOfWeek = (dayOfWeek + 6) % 7;                        //Falls die Zahlstunde noch nicht erreicht wurde!
+        int lessMeat;
+        int totalMeat;
+        int totalAverageMeat;
+        if(!factsJustLast28) {
+            int dayOfWeek = ((((calendar.get(Calendar.DAY_OF_WEEK) - myAccount.getCreationDate().getDayOfWeek()) % 7) + 7) % 7);
+            if(calendar.get(Calendar.HOUR_OF_DAY) < myAccount.getCreationDate().getHour()) {
+                dayOfWeek = (dayOfWeek + 6) % 7;                        //Falls die Zahlstunde noch nicht erreicht wurde!
+            }
+
+            totalMeat = 0;
+            for(int i = 0; i < myAccount.getPayments() + 1; i++) {
+                totalMeat += myAccount.getWeeks()[i].getMeatAmount();
+            }
+            totalAverageMeat = myAccount.getPayments() * MEAT_WEEK_EU + dayOfWeek * (MEAT_WEEK_EU / 7);
+            if(totalAverageMeat == 0) {                                 //Das TotalAverageMeat sollte sinnvollerweise niemals 0 sein.
+                totalAverageMeat = (MEAT_WEEK_EU / 7);
+            }
+
+        } else {
+            totalMeat = averageWeekLast28Days() * 4;
+            totalAverageMeat = MEAT_WEEK_EU * 4;
         }
 
-        int totalMeat = 0;
-        for(int i = 0; i < myAccount.getPayments() + 1; i++) {
-            totalMeat += myAccount.getWeeks()[i].getMeatAmount();
-        }
-        int totalAverageMeat = myAccount.getPayments() * MEAT_WEEK_EU + dayOfWeek * (MEAT_WEEK_EU / 7);
-        if(totalAverageMeat == 0) {                                 //Das TotalAverageMeat sollte sinnvollerweise niemals 0 sein.
-            totalAverageMeat = (MEAT_WEEK_EU / 7);
-        }
-
-        int lessMeat = totalAverageMeat - totalMeat;
+        lessMeat = totalAverageMeat - totalMeat;
         if(lessMeat < 0) {
             lessMeat = 0;
         }
@@ -731,6 +765,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             lessKilo = MainActivity.beautifulNumber(lessMeat / 1000);    //Ohne Nachkommastellen
         }
         String str1 = getResources().getString(R.string.since_first_week) + " ";
+        if(factsJustLast28) {
+            str1 = getResources().getString(R.string.in_last_28_days) + " ";
+        }
         String strKilo = " " + getResources().getString(R.string.kilos);
         String str2 =  strKilo + " " + getResources().getString(R.string.kilos_less);
         SpannableString spString = new SpannableString(

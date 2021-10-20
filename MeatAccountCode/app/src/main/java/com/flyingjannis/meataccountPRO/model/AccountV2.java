@@ -1,6 +1,4 @@
-package com.flyingjannis.meataccount.model;
-
-import com.flyingjannis.meataccount.activities.SettingsActivity;
+package com.flyingjannis.meataccountPRO.model;
 
 import java.util.Arrays;
 import java.util.Calendar;

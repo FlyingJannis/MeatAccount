@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.model;
+package com.flyingjannis.meataccountPRO.model;
 
 public class TutorialsReceived {
     private boolean createAmountTutorialReceived = false;

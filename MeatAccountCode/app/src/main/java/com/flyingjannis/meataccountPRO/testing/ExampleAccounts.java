@@ -1,9 +1,9 @@
-package com.flyingjannis.meataccount.testing;
+package com.flyingjannis.meataccountPRO.testing;
 
-import com.flyingjannis.meataccount.model.Account;
-import com.flyingjannis.meataccount.model.AccountV2;
-import com.flyingjannis.meataccount.model.WeekStamp;
-import com.flyingjannis.meataccount.model.WeekStampV2;
+import com.flyingjannis.meataccountPRO.model.Account;
+import com.flyingjannis.meataccountPRO.model.AccountV2;
+import com.flyingjannis.meataccountPRO.model.WeekStamp;
+import com.flyingjannis.meataccountPRO.model.WeekStampV2;
 
 import java.util.Calendar;
 import java.util.Random;

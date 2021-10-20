@@ -1,9 +1,9 @@
-package com.flyingjannis.meataccount;
+package com.flyingjannis.meataccountPRO;
 
-import com.flyingjannis.meataccount.activities.SettingsActivity;
-import com.flyingjannis.meataccount.model.AccountV2;
-import com.flyingjannis.meataccount.model.DateSaver;
-import com.flyingjannis.meataccount.testing.ExampleAccounts;
+import com.flyingjannis.meataccountPRO.activities.SettingsActivity;
+import com.flyingjannis.meataccountPRO.model.AccountV2;
+import com.flyingjannis.meataccountPRO.model.DateSaver;
+import com.flyingjannis.meataccountPRO.testing.ExampleAccounts;
 
 import org.junit.Before;
 import org.junit.Test;

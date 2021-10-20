@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.broadcasts;
+package com.flyingjannis.meataccountPRO.broadcasts;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -8,13 +8,13 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.flyingjannis.meataccount.R;
-import com.flyingjannis.meataccount.activities.SettingsActivity;
+import com.flyingjannis.meataccountPRO.R;
+import com.flyingjannis.meataccountPRO.activities.SettingsActivity;
 
-public class ReminderBroadcastEN extends BroadcastReceiver {
+public class ReminderBroadcastDE extends BroadcastReceiver {
 
-    public static String title = "Hey, you' ve been vegetarian for the last few days?";
-    public static String text = "Nice one! Look at the impact you\'ve had on the environment by giving it up!";
+    public static String title = "Na, die letzten Tage vegetarisch gelebt?";
+    public static String text = "Sehr gut! Sieh dir deinen Impact auf die Umwelt an, den du durch deinen Verzicht erzielt hast!";
 
     @Override
     public void onReceive(Context context, Intent intent) {

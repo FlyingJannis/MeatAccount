@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.activities;
+package com.flyingjannis.meataccountPRO.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -24,11 +24,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flyingjannis.meataccount.R;
-import com.flyingjannis.meataccount.model.Account;
-import com.flyingjannis.meataccount.model.AccountV2;
-import com.flyingjannis.meataccount.model.RepeatListener;
-import com.flyingjannis.meataccount.model.TutorialsReceived;
+import com.flyingjannis.meataccountPRO.R;
+import com.flyingjannis.meataccountPRO.model.Account;
+import com.flyingjannis.meataccountPRO.model.AccountV2;
+import com.flyingjannis.meataccountPRO.model.RepeatListener;
+import com.flyingjannis.meataccountPRO.model.TutorialsReceived;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -47,7 +47,7 @@ import java.util.Calendar;
 import static android.view.View.GONE;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
-    public final static boolean PRO_VERSION = false;
+    public final static boolean PRO_VERSION = true;
 
     public final static int MEAT_WEEK_EU = 1245;
     public final static double CO2_PER_KILO = 5.49;

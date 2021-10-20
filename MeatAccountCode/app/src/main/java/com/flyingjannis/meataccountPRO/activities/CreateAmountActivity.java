@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.activities;
+package com.flyingjannis.meataccountPRO.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,15 +17,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flyingjannis.meataccount.R;
-import com.flyingjannis.meataccount.model.Account;
-import com.flyingjannis.meataccount.model.AccountV2;
-import com.flyingjannis.meataccount.model.TutorialsReceived;
-import com.flyingjannis.meataccount.testing.ExampleAccounts;
+import com.flyingjannis.meataccountPRO.R;
+import com.flyingjannis.meataccountPRO.model.AccountV2;
+import com.flyingjannis.meataccountPRO.model.TutorialsReceived;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.broadcasts;
+package com.flyingjannis.meataccountPRO.broadcasts;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -8,22 +8,23 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.flyingjannis.meataccount.R;
-import com.flyingjannis.meataccount.activities.SettingsActivity;
+import com.flyingjannis.meataccountPRO.activities.MainActivity;
+import com.flyingjannis.meataccountPRO.R;
 
-public class ReminderBroadcastDE extends BroadcastReceiver {
+public class NewMeatBroadcastEN extends BroadcastReceiver {
 
-    public static String title = "Na, die letzten Tage vegetarisch gelebt?";
-    public static String text = "Sehr gut! Sieh dir deinen Impact auf die Umwelt an, den du durch deinen Verzicht erzielt hast!";
+    public static String title = "New Meat!";
+    public static String text = "You have been added new meat to your meat account. Come and have a look!";
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent in = new Intent(context, SettingsActivity.class);
+        Intent in = new Intent(context, MainActivity.class);
         in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
                 0, in, 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "flyingJannis_reminder")
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "flyingJannis_newMeat")
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle(title)
                 .setContentText(text)
@@ -33,6 +34,6 @@ public class ReminderBroadcastDE extends BroadcastReceiver {
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        notificationManager.notify(300, builder.build());
+        notificationManager.notify(200, builder.build());
     }
 }

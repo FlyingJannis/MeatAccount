@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.flyingjannis.meataccount">
+    package="com.flyingjannis.meataccountPRO">
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon_eckig2"
-        android:label="@string/app_name"
+        android:label="@string/app_name_pro"
         android:roundIcon="@drawable/icon_rund2"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

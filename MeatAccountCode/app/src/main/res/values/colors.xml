@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#090909</color>
     <color name="colorPrimaryDark">#090909</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#FFFFFF</color>
     <color name="green">#23B574</color>
     <color name="secondary_color">#B686E0</color>
     <color name="secondary_color1">#AF71E2</color>
@@ -20,6 +20,7 @@
     <color name="faded">#E0000000</color>
     <color name="darker_white">#C8C8C8</color>
     <color name="darker_green">#1E995F</color>
+    <color name="decent_in_green">#1C6141</color>
 
     <color name="text_in_boxes">#BDBDBD</color>
     <color name="numbers_in_boxes">#FAFAFA</color>

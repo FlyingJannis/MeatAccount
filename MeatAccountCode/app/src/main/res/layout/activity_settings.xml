@@ -393,6 +393,19 @@
                         android:layout_weight="1"
                         android:background="@drawable/anim_facts_background">
 
+                        <Switch
+                            android:id="@+id/switchFacts28"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="4dp"
+                            android:text="@string/last_28"
+                            android:textColor="@color/decent_in_green"
+                            android:textSize="14dp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
                         <TextView
                             android:id="@+id/tvFact"
                             android:layout_width="0dp"

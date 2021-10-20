@@ -71,7 +71,7 @@
     <string name="copy_code">Code kopieren</string>
     <string name="code_copied">Code wurde in deine Zwischenablage kopiert.</string>
     <string name="record_no_meat">Dein Fleischlos-Rekord\n(in ganzen Tagen):</string>
-
+    <string name="last_28">letzte 28 Tage</string>
 
 
     <string name="app_id">ca-app-pub-8498756977378374~3852068180</string>

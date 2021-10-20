@@ -12,7 +12,7 @@
     <string name="calm_down">Okay, bleib cool! Du zweckentfremdest MeatAccount…</string>
     <string name="weekly_amount">Dein wöchentlicher Betrag Fleisch:</string>
     <string name="average_day">Durchschnittlicher\nFleischkonsum pro Tag:</string>
-    <string name="eaten_month">Wochenkonsum in den letzten 28 Tagen (Ø):</string>
+    <string name="eaten_month">Wochenkonsum in den\nletzten 28 Tagen (Ø):</string>
     <string name="payday">Zahltag:</string>
     <string name="sunday">Sonntag</string>
     <string name="saturday">Samstag</string>
@@ -70,6 +70,7 @@
         Füge ihn bei der Erstellung eines neuen Kontos ein, um dein aktuelles Konto zu übertragen:</string>
     <string name="copy_code">Code kopieren</string>
     <string name="code_copied">Code wurde in deine Zwischenablage kopiert.</string>
+    <string name="record_no_meat">Dein Fleischlos-Rekord\n(in Tagen):</string>
 
 
 

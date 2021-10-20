@@ -424,6 +424,44 @@
 
                 </LinearLayout>
 
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/rounded_square">
+
+                    <TextView
+                        android:id="@+id/tvLastMonth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/eaten_month"
+                        android:textColor="@color/text_in_boxes"
+                        android:textSize="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvLastMonthNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="40dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="1.000g"
+                        android:textColor="@color/numbers_in_boxes"
+                        android:textSize="30dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -485,14 +523,14 @@
                         android:background="@drawable/rounded_square">
 
                         <TextView
-                            android:id="@+id/tvLastMonth"
+                            android:id="@+id/tvRecordNoMeat"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:fontFamily="sans-serif-medium"
                             android:paddingLeft="8dp"
                             android:paddingRight="8dp"
-                            android:text="@string/eaten_month"
+                            android:text="@string/record_no_meat"
                             android:textAlignment="center"
                             android:textColor="@color/text_in_boxes"
                             android:textSize="14dp"
@@ -501,7 +539,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/tvLastMonthNumber"
+                            android:id="@+id/tvRecordNoMeatNumber"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -515,9 +553,10 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tvLastMonth" />
+                            app:layout_constraintTop_toBottomOf="@+id/tvRecordNoMeat" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
+
 
 
                 <Button

@@ -80,6 +80,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private ConstraintLayout clCodeDialog;
     private Button buttonCopyCode;
     private TextView tvGeneratedCode;
+    private TextView tvRecordNoMeatNumber;
 
     private boolean statsAvailable = false;
     private int graphState = 2; //0 = 3 Monate, 1 = Jahr, 2 = Total
@@ -144,6 +145,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         clCodeDialog = findViewById(R.id.clCodeDialog);
         buttonCopyCode = findViewById(R.id.buttonCopyCode);
         tvGeneratedCode = findViewById(R.id.tvGeneratedCode);
+        tvRecordNoMeatNumber = findViewById(R.id.tvRecordNoMeatNumber);
 
         clCodeDialog.setVisibility(View.GONE);
 
@@ -223,11 +225,17 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
         tvLastMonthNumber.setText(MainActivity.beautifulWeight(averageWeekLast28Days()));
 
-        if(daysSinceLastMeat() >= 0) {                  //Fehlercode ist -1
-            tvLastMeat.setText("" + MainActivity.beautifulNumber(daysSinceLastMeat()));
+        int daysSinceLastMeat = daysSinceLastMeat();
+        if(daysSinceLastMeat >= 0) {                  //Fehlercode ist -1
+            tvLastMeat.setText("" + MainActivity.beautifulNumber(daysSinceLastMeat));
+            if(daysSinceLastMeat - 1 > myAccount.getDaysWithoutMeatRecord()) {
+                myAccount.setDaysWithoutMeatRecord(daysSinceLastMeat - 1);
+            }
         } else {
             tvLastMeat.setText("?");
         }
+
+        tvRecordNoMeatNumber.setText("" + MainActivity.beautifulNumber(myAccount.getDaysWithoutMeatRecord()));
         tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
 
         loadFact();                                 //hier wurde entfernt, dass Facts erst nach einer Woche geladen werden.

@@ -13,7 +13,7 @@
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
     <string name="payday">Payday:</string>
-    <string name="eaten_month">Weekly consumption in the last 28 days (Ø):</string>
+    <string name="eaten_month">Weekly consumption in\nthe last 28 days (Ø):</string>
     <string name="average_day">Average meat\nconsumption per day:</string>
     <string name="weekly_amount">Your weekly amount of meat:</string>
     <string name="calm_down">Okay, stay calm! You are misusing MeatAccount…</string>
@@ -68,6 +68,7 @@
         Paste it when creating a new account to transfer your current account:</string>
     <string name="copy_code">copy code</string>
     <string name="code_copied">Code was copied to your clipboard.</string>
+    <string name="record_no_meat">Your Meatless-Record\n(in days):</string>
 
 
     <string name="app_id">ca-app-pub-8498756977378374~3852068180</string>

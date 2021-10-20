@@ -561,14 +561,13 @@
                 </LinearLayout>
 
 
-
                 <Button
                     android:id="@+id/buttonGetCode"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="right"
                     android:layout_marginRight="24dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="24dp"
                     android:background="@drawable/copy_symbol" />
 
             </LinearLayout>

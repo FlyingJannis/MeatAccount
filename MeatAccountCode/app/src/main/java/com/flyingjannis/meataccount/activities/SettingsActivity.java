@@ -42,6 +42,8 @@ import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
+import static android.view.View.GONE;
+
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
     public final static boolean PRO_VERSION = false;
 
@@ -74,13 +76,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private TextView tvBalanceSettings;
     private TextView tvActualMeetWeek;
     private TextView tvLastMeat;
-    private ImageView ivFingerTap;
+    //private ImageView ivFingerTap;
     private Button buttonGetCode;
     private ScrollView svStats;
     private ConstraintLayout clCodeDialog;
     private Button buttonCopyCode;
     private TextView tvGeneratedCode;
     private TextView tvRecordNoMeatNumber;
+    private ConstraintLayout clMeatLastMonth;
 
     private boolean statsAvailable = false;
     private int graphState = 2; //0 = 3 Monate, 1 = Jahr, 2 = Total
@@ -106,7 +109,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         mAdView = findViewById(R.id.adView);
         if(PRO_VERSION) {
-            mAdView.setVisibility(View.GONE);
+            mAdView.setVisibility(GONE);
         } else {
             AdRequest adRequest = new AdRequest.Builder().build();
             mAdView.loadAd(adRequest);
@@ -140,14 +143,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         tvActualMeetWeek = findViewById(R.id.tvActualMeetWeek);
         button100Less = findViewById(R.id.button100Less);
         tvLastMeat = findViewById(R.id.tvLastMeat);
-        ivFingerTap = findViewById(R.id.ivFingerTap);
+        //ivFingerTap = findViewById(R.id.ivFingerTap);
         buttonGetCode = findViewById(R.id.buttonGetCode);
         clCodeDialog = findViewById(R.id.clCodeDialog);
         buttonCopyCode = findViewById(R.id.buttonCopyCode);
         tvGeneratedCode = findViewById(R.id.tvGeneratedCode);
         tvRecordNoMeatNumber = findViewById(R.id.tvRecordNoMeatNumber);
+        clMeatLastMonth = findViewById(R.id.clMeatLastMonth);
 
-        clCodeDialog.setVisibility(View.GONE);
+        clCodeDialog.setVisibility(GONE);
 
         buttonAmountDown.setOnTouchListener(new RepeatListener(400, 100, new View.OnClickListener() {
             @Override
@@ -190,12 +194,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         buttonCopyCode.setOnClickListener(this);
 
         updateBalance();                                    //Setzt den aktuellen Kontostand
-        tvActualMeetWeek.setText(MainActivity.beautifulWeight((int) (averagePerDay() * 7)));
+        double averagePerDay = averagePerDay();
+        tvActualMeetWeek.setText(MainActivity.beautifulWeight((int) (averagePerDay * 7)));
 
-        button3Month.setVisibility(View.GONE);
-        buttonYear.setVisibility(View.GONE);
-        buttonTotal.setVisibility(View.GONE);
-        llMakeSureButtons.setVisibility(View.GONE);
+        button3Month.setVisibility(GONE);
+        buttonYear.setVisibility(GONE);
+        buttonTotal.setVisibility(GONE);
+        llMakeSureButtons.setVisibility(GONE);
         unselectAll();
 
 
@@ -217,13 +222,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         totalDataAsGraph();                         //Graphview wird initialisiert und zeigt Daten der Wochen an.
 
-        if(averagePerDay() < 100) {
+        if(averagePerDay < 100) {
             DecimalFormat df = new DecimalFormat("0.0");
-            tvAverageDayNumber.setText(df.format(averagePerDay()) + "g");
+            tvAverageDayNumber.setText(df.format(averagePerDay) + "g");
         } else {
-            tvAverageDayNumber.setText(MainActivity.beautifulWeight((int) averagePerDay()));
+            tvAverageDayNumber.setText(MainActivity.beautifulWeight((int) averagePerDay));
         }
-        tvLastMonthNumber.setText(MainActivity.beautifulWeight(averageWeekLast28Days()));
+
+        int averageWeekLast28Days = averageWeekLast28Days();
+        if(averageWeekLast28Days >= 0) {                //Fehlercode ist -1
+            tvLastMonthNumber.setText(MainActivity.beautifulWeight(averageWeekLast28Days));
+        } else {
+            clMeatLastMonth.setVisibility(GONE);
+        }
+
 
         int daysSinceLastMeat = daysSinceLastMeat();
         if(daysSinceLastMeat >= 0) {                  //Fehlercode ist -1
@@ -307,7 +319,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 tvGeneratedCode.setText(accountCode);
                 break;
             case R.id.buttonCopyCode:
-                clCodeDialog.setVisibility(View.GONE);
+                clCodeDialog.setVisibility(GONE);
                 enableUnits(true);
                 ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("code", accountCode);
@@ -325,7 +337,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public boolean onKeyDown(int keyCode, KeyEvent keyEvent) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
             if(clCodeDialog.getVisibility() == View.VISIBLE) {
-                clCodeDialog.setVisibility(View.GONE);
+                clCodeDialog.setVisibility(GONE);
                 enableUnits(true);
                 return true;
             } else if(acceptMode) {
@@ -370,13 +382,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
     private void changeButtons() {
         if(button100Less.getVisibility() == View.VISIBLE) {
-            button100Less.setVisibility(View.GONE);
+            button100Less.setVisibility(GONE);
             llMakeSureButtons.setVisibility(View.VISIBLE);
 
             tvBalanceSettings.setTextColor(getResources().getColor(R.color.green));
         } else {
             button100Less.setVisibility(View.VISIBLE);
-            llMakeSureButtons.setVisibility(View.GONE);
+            llMakeSureButtons.setVisibility(GONE);
 
             tvBalanceSettings.setTextColor(getResources().getColor(R.color.numbers_in_boxes));
         }
@@ -485,7 +497,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             graphView.getGridLabelRenderer().setHorizontalAxisTitle(getResources().getString(R.string.weeks));
             graphView.getGridLabelRenderer().setHorizontalAxisTitleColor(getResources().getColor(R.color.white));
 
-            tvNoStats.setVisibility(View.GONE);
+            tvNoStats.setVisibility(GONE);
         } else {
             graphView.getGridLabelRenderer().setNumHorizontalLabels(2);
             graphView.getViewport().setYAxisBoundsManual(true);
@@ -625,8 +637,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
             return totalMeat28 / 4;
         } else {
-            return (int) (averagePerDay() * 7);                                                 //Falls noch keine 28 Tage vergangen sind ist der Wochendurchschnitt der
-        }                                                                               //letzten 28 Tage = dem totalen Wochendurchschnitt.
+            return -1;
+        }
     }
 
 

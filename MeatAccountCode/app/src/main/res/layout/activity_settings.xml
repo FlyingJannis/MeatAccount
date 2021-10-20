@@ -393,17 +393,6 @@
                         android:layout_weight="1"
                         android:background="@drawable/anim_facts_background">
 
-                        <ImageView
-                            android:id="@+id/ivFingerTap"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:visibility="gone"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:srcCompat="@drawable/finger_tap" />
-
                         <TextView
                             android:id="@+id/tvFact"
                             android:layout_width="0dp"
@@ -425,6 +414,7 @@
                 </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clMeatLastMonth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="16dp"

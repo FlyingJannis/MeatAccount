@@ -29,6 +29,7 @@
     <string name="total">insgesamt</string>
     <string name="last_year">1 Jahr</string>
     <string name="since_first_week">Seit deiner ersten Woche hast du\n</string>
+    <string name="in_last_28_days">In den letzten 28 Tagen hast du\n</string>
     <string name="kilos">Kilo</string>
     <string name="kilos_less">\nweniger Fleisch als der Durchschnitts Europäer gegessen!</string>
     <string name="thats">Das entspricht\n</string>

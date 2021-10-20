@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -95,8 +96,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private Toast actualToast;
     private String accountCode;
 
-    //TODO: Record ggf. aktualisieren und anzeigen!
-    //TODO: Monats Facts!
+    private Handler handler = new Handler();
+    private Runnable runnable =  new Runnable(){
+        @Override
+        public void run() {
+            loadStats();
+            handler.postDelayed(runnable, 3600000);
+        }
+    };
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -200,14 +208,18 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 factsJustLast28 = b;
-                factSwitch--;
-                if(factSwitch == -1) {
-                    factSwitch = 3;
-                }
+                factSwitch = 0;
                 loadFact();
             }
         });
 
+        runnable.run();
+
+        loadFact();                                 //hier wurde entfernt, dass Facts erst nach einer Woche geladen werden.
+
+    }
+
+    public void loadStats() {
         updateBalance();                                    //Setzt den aktuellen Kontostand
         double averagePerDay = averagePerDay();
         tvActualMeetWeek.setText(MainActivity.beautifulWeight((int) (averagePerDay * 7)));
@@ -265,9 +277,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
         tvRecordNoMeatNumber.setText("" + MainActivity.beautifulNumber(myAccount.getDaysWithoutMeatRecord()));
         tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
-
-        loadFact();                                 //hier wurde entfernt, dass Facts erst nach einer Woche geladen werden.
-
     }
 
     public void onStop() {
@@ -756,6 +765,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             lessKilo = MainActivity.beautifulNumber(lessMeat / 1000);    //Ohne Nachkommastellen
         }
         String str1 = getResources().getString(R.string.since_first_week) + " ";
+        if(factsJustLast28) {
+            str1 = getResources().getString(R.string.in_last_28_days) + " ";
+        }
         String strKilo = " " + getResources().getString(R.string.kilos);
         String str2 =  strKilo + " " + getResources().getString(R.string.kilos_less);
         SpannableString spString = new SpannableString(

@@ -295,7 +295,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="19dp"
                                 android:layout_marginStart="8dp"
-                                android:layout_marginBottom="4dp"
+                                android:layout_marginBottom="10dp"
                                 android:background="@drawable/button_down_anim"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/tvWeeklyAmount" />
@@ -305,7 +305,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="19dp"
                                 android:layout_marginStart="8dp"
-                                android:layout_marginBottom="10dp"
+                                android:layout_marginBottom="8dp"
                                 android:background="@drawable/button_up_anim"
                                 app:layout_constraintBottom_toTopOf="@+id/buttonAmountDown"
                                 app:layout_constraintStart_toEndOf="@+id/tvWeeklyAmount" />
@@ -331,7 +331,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="8dp"
-                                android:layout_marginBottom="12dp"
+                                android:layout_marginBottom="16dp"
                                 android:fontFamily="sans-serif-black"
                                 android:text="1.000g"
                                 android:textColor="@color/green"
@@ -636,7 +636,7 @@
                 android:paddingRight="5dp"
                 android:text="XXX"
                 android:textAlignment="center"
-                android:textColor="@color/dark_background"
+                android:textColor="@color/decent"
                 android:textSize="14dp"
                 android:textStyle="bold" />
 

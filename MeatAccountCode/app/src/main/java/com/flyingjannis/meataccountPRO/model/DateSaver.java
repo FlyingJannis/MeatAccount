@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.model;
+package com.flyingjannis.meataccountPRO.model;
 
 public class DateSaver {
     private int year;

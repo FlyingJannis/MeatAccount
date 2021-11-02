@@ -147,7 +147,6 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buttonAccept:
-                //saveData();
                 AccountV2.loadAccount(new AccountV2(amount));
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
@@ -229,23 +228,6 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-
-
-    /*
-    public void loadData() {
-        //Läd nur TutorialsReceived:
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String jsonTut = sharedPreferences.getString("tutorialsReceived", null);
-        Type typeTut = new TypeToken<TutorialsReceived>() {}.getType();
-        tutorialsReceived = gson.fromJson(jsonTut, typeTut);
-        if(tutorialsReceived == null) {
-            tutorialsReceived = new TutorialsReceived();
-        }
-    }
-
-     */
-
     public void saveData() {
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -258,21 +240,5 @@ public class CreateAmountActivity extends AppCompatActivity implements View.OnCl
         String jsonTut = gson.toJson(TutorialsReceived.getInstance());
         editor.putString("tutorialsReceived", jsonTut);
         editor.apply();
-
-/*
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-
-        AccountV2.loadAccount(new AccountV2(amount));
-
-
-        String jsonTut = gson.toJson(tutorialsReceived);
-        editor.putString("tutorialsReceived", jsonTut);
-        editor.apply();
-
-        MainActivity.loadingCompleted = true;
-
- */
     }
 }

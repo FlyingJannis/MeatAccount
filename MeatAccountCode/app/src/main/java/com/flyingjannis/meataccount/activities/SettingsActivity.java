@@ -78,7 +78,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private TextView tvBalanceSettings;
     private TextView tvActualMeetWeek;
     private TextView tvLastMeat;
-    //private ImageView ivFingerTap;
     private Button buttonGetCode;
     private ScrollView svStats;
     private ConstraintLayout clCodeDialog;
@@ -154,7 +153,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         tvActualMeetWeek = findViewById(R.id.tvActualMeetWeek);
         button100Less = findViewById(R.id.button100Less);
         tvLastMeat = findViewById(R.id.tvLastMeat);
-        //ivFingerTap = findViewById(R.id.ivFingerTap);
         buttonGetCode = findViewById(R.id.buttonGetCode);
         clCodeDialog = findViewById(R.id.clCodeDialog);
         buttonCopyCode = findViewById(R.id.buttonCopyCode);
@@ -171,7 +169,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 if(myAccount.getWeeklyAmount() >= 20) {
                     myAccount.setWeeklyAmount(myAccount.getWeeklyAmount() - 10);
                     tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
-                    //saveData();
                 } else {
                     makeToast(getResources().getString(R.string.vegetarian), Toast.LENGTH_SHORT);
                 }
@@ -186,7 +183,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 if(myAccount.getWeeklyAmount() <= 990) {
                     myAccount.setWeeklyAmount(myAccount.getWeeklyAmount() + 10);
                     tvWeeklyAmount.setText(MainActivity.beautifulWeight(myAccount.getWeeklyAmount()));
-                    //saveData();
                 } else {
                     makeToast(getResources().getString(R.string.calm_down), Toast.LENGTH_SHORT);
                 }
@@ -506,8 +502,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
             if(myAccount.getPayments() < 4) {
                 graphView.getGridLabelRenderer().setNumHorizontalLabels(myAccount.getPayments() + 1);
-            } else {
-                //graphView.getGridLabelRenderer().setNumHorizontalLabels(3);
             }
 
             graphView.getViewport().setXAxisBoundsManual(true);
@@ -515,9 +509,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
 
             graphView.getViewport().setYAxisBoundsManual(true);         //Passt Y-Achse an
             graphView.getViewport().setMaxY(getBorder(totalData));
-            //if((getBorder(totalData) / myAccount.weeklyAmount) <= 6) {
-            //    graphView.getGridLabelRenderer().setNumVerticalLabels(getBorder(totalData) / myAccount.weeklyAmount);
-            //}
 
             graphView.getGridLabelRenderer().setHorizontalAxisTitle(getResources().getString(R.string.weeks));
             graphView.getGridLabelRenderer().setHorizontalAxisTitleColor(getResources().getColor(R.color.white));
@@ -549,7 +540,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         for(int i = 1; i < result.length; i++) {
             result[i] = new DataPoint(i, myAccount.getWeeks()[i - 1].getMeatAmount());
         }
-        //saveData();
         return result;
     }
 
@@ -578,11 +568,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    /**
-     * NACHHER LÖSCHEN!
-     * Methode müsste bei 8ter Arrays geändert werden!
-     * Version 1 fertig
-     */
     public static int daysSinceLastMeat() {
         AccountV2 account = AccountV2.getInstance();
         int counter = 0;
@@ -621,11 +606,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         return counter;
     }
 
-    /**
-     * NACHHER LÖSCHEN!
-     * Methode müsste für 8ter Arrays geändert werden!
-     * Version 1 fertig
-     */
     public int averageWeekLast28Days() {
         if(myAccount.getPayments() >= 4) {
             Calendar calendar = Calendar.getInstance();
@@ -666,22 +646,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-
-    /**
-     * Wird die überhaupt benutzt?
-     */
-    public int eatenLastMonth() {
-        int amount = 0;
-        for(int i = myAccount.getPayments() - 4; i < myAccount.getPayments(); i++) {
-            amount += myAccount.getWeeks()[i].getMeatAmount();
-        }
-        return amount;
-    }
-
-    /**
-     * NACHHER LÖSCHEN!
-     * Methode müsste für 8ter Arrays geändert werden!
-     */
     public double averagePerDay() {
         int totalDays = 0;
         int totalMeat = 0;
@@ -700,7 +664,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             totalMeat += myAccount.getWeeks()[myAccount.getPayments()].getDays()[n];
             totalDays += 1;
         }
-        //saveData();
         return ((double) totalMeat) / totalDays;
     }
 
@@ -841,14 +804,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void loadData() {
-        /*
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("account", null);
-        Type type = new TypeToken<AccountV2>() {}.getType();
-        myAccount = gson.fromJson(json, type);
-
-         */
         SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("account", null);
@@ -889,15 +844,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         String jsonTut = gson.toJson(TutorialsReceived.getInstance());
         editor.putString("tutorialsReceived", jsonTut);
         editor.apply();
-        /*
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(myAccount);
-        editor.putString("account", json);
-        editor.apply();
-
-         */
     }
 
 }

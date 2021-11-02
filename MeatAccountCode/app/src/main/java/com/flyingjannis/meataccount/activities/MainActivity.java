@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 pay(payments * myAccount.getWeeklyAmount());         //draw() ist in pay() enthalten!
 
                 handler.postDelayed(runnable, 10000);
-                //saveData();
             }
         }
     };
@@ -163,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void finish(){
-        //saveData();
         super.finish();
     }
 
@@ -194,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.buttonAcceptMinus:
-                //loadData();
+                myAccount.addMeatDay(0);                                                            //Wichtig, dass die Datenstruktur erweitert wird, bevor daysSinceLastMeat aufgerufen wird!
                 if(SettingsActivity.daysSinceLastMeat() - 1 > myAccount.getDaysWithoutMeatRecord()) {                   //neuer Rekord wird festgehalten!
                     myAccount.setDaysWithoutMeatRecord(SettingsActivity.daysSinceLastMeat() - 1);
                 }
@@ -205,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 buttonAccept.setVisibility(View.GONE);
                 tvMinus.setVisibility(View.GONE);
                 tvExplanation.setVisibility(View.VISIBLE);
-                //saveData();
                 draw();
                 break;
             case R.id.buttonUndo:
@@ -382,7 +379,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public int howManyPayments() {
-        //loadData();
         Calendar calendar = Calendar.getInstance();
         int currentPayments = myAccount.getPayments();
         long milliDif = calendar.getTimeInMillis() - myAccount.getCreationDateMillis();
@@ -392,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             myAccount.changeCreationHour(correctTimeZone(milliDif));
         }
         myAccount.setPayments((int) (milliDif / 604800000));   //604800000
-        //saveData();
         return myAccount.getPayments() - currentPayments;
     }
 
@@ -410,7 +405,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void pay(int amount) {
         myAccount.setBalance(myAccount.getBalance() + amount);
-        //saveData();
         draw();
     }
 

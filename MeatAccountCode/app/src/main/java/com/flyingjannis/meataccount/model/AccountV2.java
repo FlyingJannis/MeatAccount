@@ -132,7 +132,7 @@ public class AccountV2 {
      * @return
      */
     public static String dataToString(AccountV2 account) {
-        String result = "";
+        String result = "M";
         result += (char) (account.getBalance() / 10);                       //Balance ist immer durch 10 teilbar! Kann also verkleinert werden zur Übertragung!
         result += (char) account.getWeeklyAmount();
         result += (char) account.getPayments();
@@ -141,12 +141,13 @@ public class AccountV2 {
         result += (char) account.getDaysWithoutMeatRecord();
         result += (char) account.getPayments();                             //Speichert die Woche, in der der Daten Transfer getätigt wurde
         result += accountWeeksToString(account);
+        result += "A";
 
         return result;
     }
 
     public static AccountV2 encodeAccount(String str) {
-        char[] chars = str.toCharArray();
+        char[] chars = str.substring(1, str.length() - 1).toCharArray();
         AccountV2 account = new AccountV2(chars[1]);
 
         if(chars[0] >= 32768) {                                             //In diesem Fall war die ursprüngliche Zahl negativ!

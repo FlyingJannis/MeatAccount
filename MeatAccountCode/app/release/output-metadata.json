@@ -5,12 +5,12 @@
     "kind": "Directory"
   },
   "applicationId": "com.flyingjannis.meataccount",
-  "variantName": "processReleaseResources",
+  "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
-      "versionCode": 8,
+      "versionCode": 9,
       "versionName": "1.3.2",
       "outputFile": "app-release.apk"
     }

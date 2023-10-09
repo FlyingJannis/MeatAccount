@@ -2,13 +2,17 @@ package com.flyingjannis.meataccount.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -152,13 +156,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             runnable.run();
 
+            askForNotificationPermission();
             createNotificationChannel();                //Created bei Bedarf einen Notification Channel
             startNotificationTimerNewMeat();
             startNotificationTimerReminder();
         }
 
     }
-
 
     @Override
     public void finish(){
@@ -480,10 +484,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         long currentMillis = System.currentTimeMillis();
 
-        System.out.println("HIEEEEEER!");
         alarmManager.set(AlarmManager.RTC_WAKEUP,
                 currentMillis + REMINDER_TIME,
                 pendingIntent);
+    }
+
+    private void askForNotificationPermission() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if(ContextCompat.checkSelfPermission(MainActivity.this,
+                    Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
     }
 
     private void createNotificationChannel() {

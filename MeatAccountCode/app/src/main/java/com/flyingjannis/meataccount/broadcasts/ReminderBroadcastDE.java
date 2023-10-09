@@ -21,7 +21,7 @@ public class ReminderBroadcastDE extends BroadcastReceiver {
         Intent in = new Intent(context, SettingsActivity.class);
         in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                0, in, 0);
+                0, in, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "flyingJannis_reminder")
                 .setSmallIcon(R.drawable.notification_icon)

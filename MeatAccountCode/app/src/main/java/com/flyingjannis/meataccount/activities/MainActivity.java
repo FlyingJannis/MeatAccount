@@ -382,7 +382,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Calendar calendar = Calendar.getInstance();
         int currentPayments = myAccount.getPayments();
         long milliDif = calendar.getTimeInMillis() - myAccount.getCreationDateMillis();
-        System.out.println("MILLIS:" + myAccount.getCreationDateMillis() + "DIESA:" + calendar.getTimeInMillis());
 
         if(correctTimeZone(milliDif) == -1 || correctTimeZone(milliDif) == 1) {         //Sehr umständlich um sich an Sommer und Winterzeit anzupassen!
             myAccount.changeCreationHour(correctTimeZone(milliDif));
@@ -443,10 +442,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PendingIntent pendingIntent;
         if(getResources().getString(R.string.monday).equals("Montag")) {                            //Ich bin lost und weiß nicht wie ich es sonst differenzieren soll...
             intent = new Intent(MainActivity.this, NewMeatBroadcastDE.class);
-            pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+            pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         } else {
             intent = new Intent(MainActivity.this, NewMeatBroadcastEN.class);
-            pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+            pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         }
 
 
@@ -471,16 +470,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         PendingIntent pendingIntent;
         if(getResources().getString(R.string.monday).equals("Montag")) {                            //Ich bin lost und weiß nicht wie ich es sonst differenzieren soll...
             intent = new Intent(MainActivity.this, ReminderBroadcastDE.class);
-            pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+            pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         } else {
             intent = new Intent(MainActivity.this, ReminderBroadcastEN.class);
-            pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+            pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         }
 
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         long currentMillis = System.currentTimeMillis();
 
+        System.out.println("HIEEEEEER!");
         alarmManager.set(AlarmManager.RTC_WAKEUP,
                 currentMillis + REMINDER_TIME,
                 pendingIntent);

@@ -1,7 +1,7 @@
 <resources>
     <string name="statistics">Statistics</string>
-    <string name="app_name">MeatAccount</string>
-    <string name="app_name_pro">MeatAccount PRO</string>
+    <string name="app_name">Meat Account</string>
+    <string name="app_name_pro">Meat Account PRO</string>
     <string name="choose_meat">Please choose your weekly amount of meat:</string>
     <string name="accept">accept</string>
     <string name="undo">undo</string>

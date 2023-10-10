@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.broadcasts;
+package com.flyingjannis.meataccountPRO.broadcasts;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -8,8 +8,8 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.flyingjannis.meataccount.R;
-import com.flyingjannis.meataccount.activities.SettingsActivity;
+import com.flyingjannis.meataccountPRO.R;
+import com.flyingjannis.meataccountPRO.activities.SettingsActivity;
 
 public class ReminderBroadcastDE extends BroadcastReceiver {
 

@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.model;
+package com.flyingjannis.meataccountPRO.model;
 
 import android.os.Handler;
 import android.view.MotionEvent;

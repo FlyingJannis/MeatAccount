@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.model;
+package com.flyingjannis.meataccountPRO.model;
 
 public class WeekStampV2 {
     private int[] days = new int[8];                            //Das 8te Feld, falls schon Zahltag ist, aber noch nicht gezahlt wurde (neue WeekStamps werden erst bei Zahlung erstellt!)

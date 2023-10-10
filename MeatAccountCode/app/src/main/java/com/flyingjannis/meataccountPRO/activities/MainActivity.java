@@ -1,4 +1,4 @@
-package com.flyingjannis.meataccount.activities;
+package com.flyingjannis.meataccountPRO.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -23,14 +23,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flyingjannis.meataccount.R;
-import com.flyingjannis.meataccount.broadcasts.NewMeatBroadcastDE;
-import com.flyingjannis.meataccount.broadcasts.NewMeatBroadcastEN;
-import com.flyingjannis.meataccount.broadcasts.ReminderBroadcastDE;
-import com.flyingjannis.meataccount.broadcasts.ReminderBroadcastEN;
-import com.flyingjannis.meataccount.model.Account;
-import com.flyingjannis.meataccount.model.AccountV2;
-import com.flyingjannis.meataccount.model.TutorialsReceived;
+import com.flyingjannis.meataccountPRO.R;
+import com.flyingjannis.meataccountPRO.broadcasts.NewMeatBroadcastDE;
+import com.flyingjannis.meataccountPRO.broadcasts.NewMeatBroadcastEN;
+import com.flyingjannis.meataccountPRO.broadcasts.ReminderBroadcastDE;
+import com.flyingjannis.meataccountPRO.broadcasts.ReminderBroadcastEN;
+import com.flyingjannis.meataccountPRO.model.Account;
+import com.flyingjannis.meataccountPRO.model.AccountV2;
+import com.flyingjannis.meataccountPRO.model.TutorialsReceived;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

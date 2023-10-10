@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.flyingjannis.meataccount">
+    package="com.flyingjannis.meataccountPRO">
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/app_name_pro"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.SettingsActivity"
+        <activity android:name="com.flyingjannis.meataccountPRO.activities.SettingsActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".activities.CreateAmountActivity"
+            android:name="com.flyingjannis.meataccountPRO.activities.CreateAmountActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.flyingjannis.meataccountPRO.activities.MainActivity"
             android:exported="true"
             android:configChanges="orientation"
             android:screenOrientation="portrait">
@@ -28,10 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".broadcasts.NewMeatBroadcastDE"/>
-        <receiver android:name=".broadcasts.NewMeatBroadcastEN"/>
-        <receiver android:name=".broadcasts.ReminderBroadcastDE"/>
-        <receiver android:name=".broadcasts.ReminderBroadcastEN"/>
+        <receiver android:name="com.flyingjannis.meataccountPRO.broadcasts.NewMeatBroadcastDE"/>
+        <receiver android:name="com.flyingjannis.meataccountPRO.broadcasts.NewMeatBroadcastEN"/>
+        <receiver android:name="com.flyingjannis.meataccountPRO.broadcasts.ReminderBroadcastDE"/>
+        <receiver android:name="com.flyingjannis.meataccountPRO.broadcasts.ReminderBroadcastEN"/>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/app_id"/>

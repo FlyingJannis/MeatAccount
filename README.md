@@ -1,8 +1,8 @@
 # MeatAccount
 Meat Account is a MUST HAVE for every flexitarian! Especially if:
-• you would like to reduce your meat consumption,
-• you see the problematic effects that our high meat consumption has on our climate, animal welfare (factory farming) or our own health,
-• however, it is (still) difficult for you to completely give up meat.
+- you would like to reduce your meat consumption,
+- you see the problematic effects that our high meat consumption has on our climate, animal welfare (factory farming) or our own health,
+- however, it is (still) difficult for you to completely give up meat.
 
 That doesn't matter! Then Meat Account is exactly the right app for you!
 
@@ -16,10 +16,10 @@ Due to the account principle, it is also possible to go into the red and exceed 
 
 Meat Account allows you to track your meat consumption very freely but nevertheless in a very targeted way and reduce it to your desired level.
 In the statistics you can also see
-• how much meat you consume on average per day
-• what your last month looked like in terms of meat consumption
-• an overview of your your current development with the help of beautiful graphs
-• the impact your reduced meat consumption has on your personal ecological footprint, for example, compared to the average!
+- how much meat you consume on average per day
+- what your last month looked like in terms of meat consumption
+- an overview of your your current development with the help of beautiful graphs
+- the impact your reduced meat consumption has on your personal ecological footprint, for example, compared to the average!
 
 In Europe, the average person consumes just under 66 kilos of meat per year!
 This corresponds to about 1.26 kilos per week!
@@ -28,10 +28,11 @@ Not everyone has to become a vegetarian in order to bring about a visibly positi
 It's about being able to appreciate a good piece of meat again.
 
 Meat Account gives you exactly this opportunity. And in addition to the decision:
-• "I eat meat" and
-• "I am a vegetarian"
+- "I eat meat" and
+- "I am a vegetarian"
+  
 you also have the option, for example:
-• "I eat meat, but only a fixed amount per week".
+- "I eat meat, but only a fixed amount per week".
 
 Because every abstinence has an influence!
 

@@ -1,5 +1,6 @@
 # MeatAccount
 ![til](demo.gif)
+
 Meat Account is a MUST HAVE for every flexitarian! Especially if:
 - you would like to reduce your meat consumption,
 - you see the problematic effects that our high meat consumption has on our climate, animal welfare (factory farming) or our own health,

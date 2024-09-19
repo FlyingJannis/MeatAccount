@@ -1,4 +1,4 @@
-# MeatAccount
+# Meat Account
 ![til](demo.gif)
 
 Meat Account is a MUST HAVE for every flexitarian! Especially if:
